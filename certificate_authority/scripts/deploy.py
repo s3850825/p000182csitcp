@@ -22,7 +22,7 @@ def create_certificate(name, public_key):
     transaction.wait(1)
 
 
-def get_certificate():
+def get_certificate(KeyPair):
     # get account
     account = get_account()
 
@@ -31,7 +31,7 @@ def get_certificate():
 
     # show certificate information
     name = certification.getName({"from": account})
-    signed_public_key = certification.getSignedPublicKey({"from": account})
+    signed_public_key = certification.getSignedPublicKey(KeyPair.n, KeyPair.d, {"from": account})
     timestamp = certification.getTimestamp({"from": account})
     print("------------------------------------")
     print("\t  certificate")
