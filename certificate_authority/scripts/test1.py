@@ -5,28 +5,37 @@ import sys
 import binascii
 from binascii import unhexlify
 import codecs 
+
+
+public_key = 1234
+
 KeyPair = RSA.generate(bits=1024)
-
-k = 'wn\x04\x03\xd7\xf6\xca\x7fyT\xd0z\x1b\xb2\xb1'
-k_byte = str.encode(k)
-
-hash = SHA256.new(k_byte)
+pb_bytes = str.encode(str(public_key))
+hash = SHA256.new(pb_bytes)
 signer = PKCS115_SigScheme(KeyPair)
 signature = signer.sign(hash)
-print(signature)
-str_sig = str(signature)
-s = str_sig[2:-1]
-print(s)
-alist = s.split("\\")
-print("--------------")
-newList = []
-for x in alist:
-    if x != '':
-        # print(str.encode(x))
-        newList.append(str.encode(x))
-print(newList)
-print("--------------")
-a = b' \\'.join(newList)
-print(a)
-print(type(a))
 
+signature1 = signature[0:32]
+signature2 = signature[32:64]
+signature3 = signature[64:96]
+signature4 = signature[96:128]
+
+user_publick_key_bytes = str.encode(str(public_key))
+verifier = PKCS115_SigScheme(KeyPair.public_key())
+hash = SHA256.new(user_publick_key_bytes)
+
+try:
+    verifier.verify(hash, signature1 + signature2 + signature3 + signature4)
+    print("Signature is valid.")
+except:
+    print("Signature is Invalid.")
+
+# print("--- Original Signature ---\n", signature)
+# print("\n")
+# # Passed as string in Solidity
+# str_signature = str(signature)
+# print("--- String of Signature ---\n", str_signature)
+# print("\n")
+# str_siganture_bytes = str.encode(str_signature)
+# print("--- String to bytes signature\n", str_siganture_bytes)
+# print("\n")

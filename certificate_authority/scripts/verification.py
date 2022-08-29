@@ -13,17 +13,13 @@ def verify_signature(user_public_key, KeyPair):
     # show certificate information
     name = certification.getName({"from": account})
 
-    # get the signature from the certificate and convert to bytes
-    # signed_public_key = certification.getSignedPublicKey({"from": account})
-    # print("return\n", signed_public_key)
-    # signed_public_key_list = list(signed_public_key[2:-1])
-    # print("convert\n", bytes(signed_public_key_list))
-
-    user_public_key_bytes = str.encode(str(user_public_key))
-    hash = SHA256.new(user_public_key_bytes)
-    signer = PKCS115_SigScheme(KeyPair)
-    signature = signer.sign(hash)
-
+    # get the array of signature from the certificate and convert to bytes
+    signed_public_key = certification.getSignedPublicKey({"from": account})
+    signature = b''
+    for s in signed_public_key:
+        signature += s
+    # print("--- WHEN WE GET SIGNATRE FROM SOLIDITY ---")
+    # print(signature)
     # verify user's public key by using CA's public key
     user_publick_key_bytes = str.encode(str(user_public_key))
     verifier = PKCS115_SigScheme(KeyPair.public_key())
