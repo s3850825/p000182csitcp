@@ -23,8 +23,14 @@ def create_certificate(name, user_public_key, KeyPair):
     signer = PKCS115_SigScheme(KeyPair)
     signature = signer.sign(hash)
 
+    # devide 1024bits to four of 256bits
+    signature_part1 = signature[0:32]
+    signature_part2 = signature[32:64]
+    signature_part3 = signature[64:96]
+    signature_part4 = signature[96:128]
+
     # create a transaction
-    transaction = certification.createCertificate(name, str(user_public_key), str(signature), {"from": account})
+    transaction = certification.createCertificate(name, str(user_public_key), signature_part1, signature_part2, signature_part3, signature_part4, {"from": account})
     transaction.wait(1)
 
 
@@ -39,10 +45,14 @@ def get_certificate(KeyPair):
     name = certification.getName({"from": account})
 
     signed_public_key = certification.getSignedPublicKey({"from": account})
+    signature = b''
+    for s in signed_public_key:
+        signature += s
+
     timestamp = certification.getTimestamp({"from": account})
     print("------------------------------------")
     print("\t  certificate")
     print("name: ", name)
-    print("signed_public_key: ", signed_public_key)
+    print("signed_public_key: ", signature)
     print("timestamp: ", timestamp)
     print("------------------------------------")
