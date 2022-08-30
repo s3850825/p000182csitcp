@@ -18,8 +18,7 @@ def verify_signature(user_public_key, KeyPair):
     signature = b''
     for s in signed_public_key:
         signature += s
-    # print("--- WHEN WE GET SIGNATRE FROM SOLIDITY ---")
-    # print(signature)
+        
     # verify user's public key by using CA's public key
     user_publick_key_bytes = str.encode(str(user_public_key))
     verifier = PKCS115_SigScheme(KeyPair.public_key())
