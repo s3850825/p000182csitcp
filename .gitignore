@@ -2,3 +2,5 @@
 /certificate_authority/scripts/__pycache__
 /certificate_authority/build/contracts/*
 /certificate_authority/build/deployments/*
+/certificate_authority/build/contracts/RSACertification.json
+/certificate_authority/build/deployments/map.json
