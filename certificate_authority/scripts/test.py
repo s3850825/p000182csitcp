@@ -8,7 +8,7 @@ from interfaces.frontend.main import frontend_main
 
 def main():
     KeyPair = generate_CA_key_pairs()
-
+    
     # open frontend UI
     frontend_main()
 
