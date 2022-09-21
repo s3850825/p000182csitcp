@@ -13,7 +13,6 @@ def main():
     frontend_main()
 
     # we need to run these in frontend UI
-    
     # deploy_certification()
     # user_publickey = 123
     # create_certificate("Alice", user_publickey, KeyPair)
