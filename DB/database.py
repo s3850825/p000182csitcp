@@ -46,3 +46,6 @@ insertNewStudent("s12345", "abcd")
 
 # delete existent student account from DB
 deleteExistentStudent("s123456")
+
+# backup database before close
+backupDB()
