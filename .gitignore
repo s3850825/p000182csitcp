@@ -1,0 +1,4 @@
+/certificate_authority/.env
+/certificate_authority/scripts/__pycache__
+/certificate_authority/build/contracts/*
+/certificate_authority/build/deployments/*
