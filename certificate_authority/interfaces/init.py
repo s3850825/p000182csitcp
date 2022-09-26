@@ -18,8 +18,8 @@ def frontend_UI():
     widget_MainPage = QWidget()
     ui_mainPage.setupUi(widget_MainPage)
     imgName = './American.png'
-    jpg = QtGui.QPixmap(imgName).scaled(ui_mainPage.labelFace.width(), ui_mainPage.labelFace.height())
-    ui_mainPage.labelFace.setPixmap(jpg)
+    jpg = QtGui.QPixmap(imgName).scaled(ui_mainPage.labelStudentFace.width(), ui_mainPage.labelStudentFace.height())
+    ui_mainPage.labelStudentFace.setPixmap(jpg)
 
     widget_sign = QWidget()
     ui_sign = Ui_Sign_Up()

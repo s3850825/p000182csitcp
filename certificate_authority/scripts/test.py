@@ -13,8 +13,8 @@ def main():
     frontend_UI()
 
     # we need to run these in frontend UI
-    # deploy_certification()
-    # user_publickey = 123
-    # create_certificate("Alice", user_publickey, KeyPair)
-    # get_certificate(KeyPair)
-    # verify_signature(user_publickey, KeyPair)
+    deploy_certification()
+    user_publickey = 123
+    create_certificate("Alice", user_publickey, KeyPair)
+    get_certificate(KeyPair)
+    verify_signature(user_publickey, KeyPair)

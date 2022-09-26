@@ -73,5 +73,5 @@ class Ui_MainPage(object):
         self.label_2.setText(_translate("MainPage", "Your public key is "))
         self.labelPrivateKey.setText(_translate("MainPage", "XXX"))
         self.labelPublicKey.setText(_translate("MainPage", "XXX"))
-        self.labelName.setText(_translate("MainPage", "Name"))
+        self.labelStudentName.setText(_translate("MainPage", "Name"))
         self.LinkBtnMessageBoard.setText(_translate("MainPage", "Message board"))
