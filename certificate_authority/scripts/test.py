@@ -4,13 +4,13 @@ from scripts.keyGeneration import generate_CA_key_pairs
 from Crypto.Hash import SHA256
 from Crypto.Signature.pkcs1_15 import PKCS115_SigScheme
 import binascii
-from interfaces.frontend.main import frontend_main
+from interfaces.init import frontend_UI
 
 def main():
     KeyPair = generate_CA_key_pairs()
     
     # open frontend UI
-    frontend_main()
+    frontend_UI()
 
     # we need to run these in frontend UI
     # deploy_certification()
