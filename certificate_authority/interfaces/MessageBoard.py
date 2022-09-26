@@ -16,7 +16,7 @@ class Ui_MessageBoard(object):
         MessageBoard.setObjectName("MessageBoard")
         MessageBoard.resize(766, 763)
         font = QtGui.QFont()
-        font.setFamily("微软雅黑")
+        font.setFamily("Helvetica")
         font.setPointSize(14)
         MessageBoard.setFont(font)
         self.label = QtWidgets.QLabel(MessageBoard)
