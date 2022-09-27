@@ -38,9 +38,8 @@ def frontend_UI():
     ui_message.labelFace3.setPixmap(jpg_1)
     ui_message.labelFace4.setPixmap(jpg_2)
 
+    # connect to DB
     database = Database()
-    # add student table to add student's account info
-    database.executeQuery("CREATE TABLE IF NOT EXISTS student (username text PRIMARY KEY, password text, walletPassword text)")
 
     ui_mainPage.LinkBtnMessageBoard.clicked.connect(
         lambda: {
@@ -72,7 +71,8 @@ def checkStudentInfo(database, studentInfo, ui_sign, widget_sign):
         print(studentInfo, 'registered!')
         
         # We need to generate key pairs for the user and then save into DB
-        
+        privKey, pubKey = generate_RSA_key_pairs()
+        database.updateNewStudentKeyPairs(privKey, pubKey, studentName)
     else:
         ui_sign.reset()
         print(studentInfo[0], " cannot be registered")
