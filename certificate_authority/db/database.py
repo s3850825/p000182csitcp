@@ -48,6 +48,24 @@ class Database():
         if (result != []):
             return True
         return False
+    
+    def getStudentWalletPassword(self, username):
+        query = "SELECT walletPassword FROM student WHERE username=:username"
+        self.c.execute(query, {'username': username})
+        result = self.c.fetchall()
+        return result[0][0]
+    
+    def getStudentPrivateKey(self, username):
+        query = "SELECT privateKey FROM student WHERE username=:username"
+        self.c.execute(query, {'username': username})
+        result = self.c.fetchall()
+        return result[0][0]
+
+    def getStudentPublicKey(self, username):
+        query = "SELECT publicKey FROM student WHERE username=:username"
+        self.c.execute(query, {'username': username})
+        result = self.c.fetchall()
+        return result[0][0]
 
     def backupDB(self):
         with self.conn:
