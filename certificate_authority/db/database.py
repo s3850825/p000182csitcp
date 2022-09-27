@@ -6,6 +6,7 @@ class Database():
         # isolation_level=None is for auto commit
         self.conn = sqlite3.connect(self.DATABASE_FILE, isolation_level=None)
         self.c = self.conn.cursor()
+        self.executeQuery("CREATE TABLE IF NOT EXISTS student (username text PRIMARY KEY, password text, walletPassword text, publicKey blob, privateKey blob)")
 
     def database(self):
         # connect to DB
@@ -20,8 +21,12 @@ class Database():
         self.c.execute(query)
 
     def insertNewStudent(self, username, password, walletPassword):
-        query = "INSERT INTO student VALUES('" + username + "', '" + password + "', '" + walletPassword + "')"
-        self.c.execute(query)
+        query = "INSERT INTO student VALUES('" + username + "', '" + password + "', '" + walletPassword + "', ?, ?)"
+        self.c.execute(query, (None, None,))
+
+    def updateNewStudentKeyPairs(self, privKey, pubKey, username):
+        query = "UPDATE student set privateKey = ?,  publicKey = ? WHERE username = ?"
+        self.c.execute(query, (privKey, pubKey, username))
 
     def deleteExistentStudent(self, username):
         query = "DELETE FROM student WHERE username=:username" 
@@ -50,16 +55,3 @@ class Database():
                 for line in self.conn.iterdump():
                     f.write('%s\n' % line)
                 print('Back up is complted.')
-
-    def init(self):
-        # add first student to test
-        executeQuery("INSERT INTO student VALUES('s123456', 'abcd', 'walletpassword')")
-
-        # add new student account into DB when a student creates an account
-        insertNewStudent("s12345", "abcd", "walletPassword") 
-
-        # delete existent student account from DB
-        deleteExistentStudent("s123456")
-
-        # backup database before close
-        backupDB()
