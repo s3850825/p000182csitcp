@@ -4,6 +4,7 @@ from interfaces.login import *
 from interfaces.sign_up import *
 from interfaces.MainPage import *
 from interfaces.MessageBoard import *
+from interfaces.user import *
 from db.database import *
 from scripts.keyGeneration import *
 
@@ -40,6 +41,7 @@ def frontend_UI():
 
     # connect to DB
     database = Database()
+    user = User()
 
     ui_mainPage.LinkBtnMessageBoard.clicked.connect(
         lambda: {
@@ -53,7 +55,7 @@ def frontend_UI():
     )
     ui.btnLogin.clicked.connect(
         lambda: {
-            checkLoginInfo(database, ui.returnStudentInfo(), ui, widget_login, widget_MainPage)
+            checkLoginInfo(database, ui.returnStudentInfo(), ui, widget_login, widget_MainPage, user, ui_mainPage)
         }
     )
     ui_sign.btnSignUp.clicked.connect(
@@ -67,6 +69,7 @@ def checkStudentInfo(database, studentInfo, ui_sign, widget_sign):
     studentName, studentPassword, studentPassword2, studentWalletPassword = studentInfo
     if database.checkUniqueStudentName(studentInfo[0]) and studentPassword == studentPassword2:
         database.insertNewStudent(studentName, studentPassword, studentWalletPassword)
+        ui_sign.reset()
         widget_sign.close()
         print(studentInfo, 'registered!')
         
@@ -77,9 +80,13 @@ def checkStudentInfo(database, studentInfo, ui_sign, widget_sign):
         ui_sign.reset()
         print(studentInfo[0], " cannot be registered")
 
-def checkLoginInfo(database, studentInfo, ui, widget_login, widget_MainPage):
+def checkLoginInfo(database, studentInfo, ui, widget_login, widget_MainPage, user, ui_mainPage):
     studentName, studentPassword = studentInfo
     if database.checkStudentInfo(studentInfo[0], studentInfo[1]):
+        ui.reset()
+        # Once user logged in all the information is saved into user object 
+        user.setStudentInfo(studentName, database)
+        ui_mainPage.showStudentKeyPairs(user)
         widget_login.close()
         widget_MainPage.show()
     else:
