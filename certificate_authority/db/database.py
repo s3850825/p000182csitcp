@@ -7,6 +7,7 @@ class Database():
         self.conn = sqlite3.connect(self.DATABASE_FILE, isolation_level=None)
         self.c = self.conn.cursor()
         self.executeQuery("CREATE TABLE IF NOT EXISTS student (username text PRIMARY KEY, password text, walletPassword text, publicKey blob, privateKey blob)")
+        self.executeQuery("CREATE TABLE IF NOT EXISTS message (sender text, receiver text, type text, message blob)")
 
     def database(self):
         # connect to DB
@@ -66,6 +67,19 @@ class Database():
         self.c.execute(query, {'username': username})
         result = self.c.fetchall()
         return result[0][0]
+    
+    def getAllStudents(self):
+        query = "SELECT username FROM student"
+        self.c.execute(query)
+        result = self.c.fetchall()
+        studentList = []
+        for student in result:
+            studentList.append(student[0])
+        return studentList
+
+    def insertMessage(self, sender, receiver, message, messageType):
+        query = "INSERT INTO message VALUES('" + sender + "', '" + receiver + "', '" + messageType + "', '" + message + "')"
+        self.c.execute(query)
 
     def backupDB(self):
         with self.conn:
