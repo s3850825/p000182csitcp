@@ -81,5 +81,9 @@ class Ui_Send_Message(object):
         studentList.remove(user.getStudentName())
         self.comboBoxReceiver.addItems(studentList)
     
+    def clear(self):
+        self.textMessage.setText("")
+        self.comboBoxReceiver.clear()
+    
     def getUserInputForPlainText(self):
         return self.SenderName.text(), self.comboBoxReceiver.currentText(), self.textMessage.toPlainText()
