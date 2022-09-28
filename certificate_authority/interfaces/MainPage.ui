@@ -19,102 +19,39 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QLabel" name="label">
+  <widget class="QLabel" name="WelcomeMessage">
    <property name="geometry">
     <rect>
-     <x>160</x>
-     <y>40</y>
-     <width>251</width>
+     <x>170</x>
+     <y>100</y>
+     <width>171</width>
      <height>51</height>
     </rect>
    </property>
    <property name="font">
     <font>
-     <pointsize>20</pointsize>
+     <family>Arial</family>
+     <pointsize>24</pointsize>
     </font>
    </property>
    <property name="text">
-    <string>Your private key is </string>
+    <string>Welcome</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label_2">
+  <widget class="QLabel" name="StudentName">
    <property name="geometry">
     <rect>
-     <x>160</x>
+     <x>370</x>
      <y>100</y>
-     <width>251</width>
-     <height>41</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>20</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>Your public key is </string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="labelPrivateKey">
-   <property name="geometry">
-    <rect>
-     <x>430</x>
-     <y>40</y>
-     <width>111</width>
+     <width>121</width>
      <height>51</height>
     </rect>
    </property>
    <property name="font">
     <font>
-     <pointsize>20</pointsize>
+     <family>Arial</family>
+     <pointsize>22</pointsize>
     </font>
-   </property>
-   <property name="text">
-    <string>XXX</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="labelPublicKey">
-   <property name="geometry">
-    <rect>
-     <x>430</x>
-     <y>100</y>
-     <width>111</width>
-     <height>41</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>20</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>XXX</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="labelFace">
-   <property name="geometry">
-    <rect>
-     <x>280</x>
-     <y>190</y>
-     <width>120</width>
-     <height>120</height>
-    </rect>
-   </property>
-   <property name="frameShape">
-    <enum>QFrame::Box</enum>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QLabel" name="labelName">
-   <property name="geometry">
-    <rect>
-     <x>310</x>
-     <y>320</y>
-     <width>61</width>
-     <height>21</height>
-    </rect>
    </property>
    <property name="text">
     <string>Name</string>
@@ -123,20 +60,39 @@
   <widget class="QCommandLinkButton" name="LinkBtnMessageBoard">
    <property name="geometry">
     <rect>
-     <x>250</x>
-     <y>480</y>
-     <width>211</width>
-     <height>41</height>
+     <x>190</x>
+     <y>300</y>
+     <width>311</width>
+     <height>61</height>
     </rect>
    </property>
    <property name="font">
     <font>
-     <family>Segoe UI</family>
-     <pointsize>14</pointsize>
+     <family>Arial</family>
+     <pointsize>20</pointsize>
     </font>
    </property>
    <property name="text">
     <string>Message  board</string>
+   </property>
+  </widget>
+  <widget class="QCommandLinkButton" name="LinkBtnMessageBoard_2">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>370</y>
+     <width>311</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>20</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>Key pairs</string>
    </property>
   </widget>
  </widget>
