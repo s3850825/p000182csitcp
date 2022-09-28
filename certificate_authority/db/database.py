@@ -81,6 +81,12 @@ class Database():
         query = "INSERT INTO message VALUES('" + sender + "', '" + receiver + "', '" + messageType + "', '" + message + "')"
         self.c.execute(query)
 
+    def getReceivedMessages(self, username):
+        query = "SELECT * FROM message WHERE receiver=:username"
+        self.c.execute(query, {'username': username})
+        result = self.c.fetchall()
+        return result
+
     def backupDB(self):
         with self.conn:
             with open('dump.sql', 'w') as f:

@@ -45,6 +45,7 @@ def frontend_UI():
     # Message board button event
     ui_mainPage.LinkBtnMessageBoard.clicked.connect(
         lambda: {
+            ui_message.showReceivedMessages(database, user),
             widget_message.show()
         }
     )
@@ -129,6 +130,7 @@ def checkTheMessage(database, ui_send_message, widget_send_message):
     if message != "":
         database.insertMessage(sender, receiver, message, "PLAIN")
         widget_send_message.close()
+        ui_send_message.clear()
     else:
         print("Message must not be null")
         
