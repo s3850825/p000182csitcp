@@ -45,7 +45,6 @@ class Database():
         query = "SELECT * FROM student WHERE username=:username AND password=:password"
         self.c.execute(query, {'username': username, 'password': password})
         result = self.c.fetchall()
-        print(result)
         if (result != []):
             return True
         return False
@@ -78,8 +77,8 @@ class Database():
         return studentList
 
     def insertMessage(self, sender, receiver, message, messageType):
-        query = "INSERT INTO message VALUES('" + sender + "', '" + receiver + "', '" + messageType + "', '" + message + "')"
-        self.c.execute(query)
+        query = "INSERT INTO message VALUES('" + sender + "', '" + receiver + "', '" + messageType + "', ?)"
+        self.c.execute(query, (message,))
 
     def getReceivedMessages(self, username):
         query = "SELECT * FROM message WHERE receiver=:username"

@@ -14,9 +14,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Send_Message(object):
     def setupUi(self, SendMessage):
         SendMessage.setObjectName("SendMessage")
-        SendMessage.resize(681, 686)
+        SendMessage.resize(681, 743)
         self.PlainButton = QtWidgets.QCommandLinkButton(SendMessage)
-        self.PlainButton.setGeometry(QtCore.QRect(260, 480, 261, 51))
+        self.PlainButton.setGeometry(QtCore.QRect(270, 450, 141, 51))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(16)
@@ -33,11 +33,11 @@ class Ui_Send_Message(object):
         self.textMessage.setFont(font)
         self.textMessage.setObjectName("textMessage")
         self.EncryptButton = QtWidgets.QCommandLinkButton(SendMessage)
-        self.EncryptButton.setGeometry(QtCore.QRect(260, 540, 261, 51))
+        self.EncryptButton.setGeometry(QtCore.QRect(270, 500, 141, 51))
         self.EncryptButton.setFont(font)
         self.EncryptButton.setObjectName("EncryptButton")
         self.SignatureButton = QtWidgets.QCommandLinkButton(SendMessage)
-        self.SignatureButton.setGeometry(QtCore.QRect(260, 600, 261, 51))
+        self.SignatureButton.setGeometry(QtCore.QRect(270, 670, 141, 51))
         self.SignatureButton.setFont(font)
         self.SignatureButton.setObjectName("SignatureButton")
         self.Sender = QtWidgets.QLabel(SendMessage)
@@ -58,6 +58,14 @@ class Ui_Send_Message(object):
         font.setPointSize(12)
         self.comboBoxReceiver.setFont(font)
         self.comboBoxReceiver.setObjectName("comboBoxReceiver")
+        self.privKeyText = QtWidgets.QTextEdit(SendMessage)
+        self.privKeyText.setGeometry(QtCore.QRect(170, 570, 351, 91))
+        self.privKeyText.setFont(font)
+        self.privKeyText.setObjectName("privKeyText")
+        self.label = QtWidgets.QLabel(SendMessage)
+        self.label.setGeometry(QtCore.QRect(10, 590, 151, 41))
+        self.label.setFont(font)
+        self.label.setObjectName("label")
 
         self.retranslateUi(SendMessage)
         QtCore.QMetaObject.connectSlotsByName(SendMessage)
@@ -72,6 +80,7 @@ class Ui_Send_Message(object):
         self.Sender.setText(_translate("SendMessage", "Sender"))
         self.Receiver.setText(_translate("SendMessage", "Receiver"))
         self.SenderName.setText(_translate("SendMessage", "SenderName"))
+        self.label.setText(_translate("SendMessage", "Your private key"))
 
     def showStudentName(self, user):
         self.SenderName.setText(user.getStudentName())
@@ -87,3 +96,6 @@ class Ui_Send_Message(object):
     
     def getUserInputForPlainText(self):
         return self.SenderName.text(), self.comboBoxReceiver.currentText(), self.textMessage.toPlainText()
+
+    def getSenderPrivateKey(self):
+        return self.privKeyText.toPlainText(), self.textMessage.toPlainText()

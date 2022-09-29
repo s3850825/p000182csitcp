@@ -6,5 +6,4 @@ def generate_RSA_key_pairs():
 
     privKey = KeyPair.exportKey('PEM')
     pubKey = KeyPair.publickey().exportKey('PEM')
-
     return privKey, pubKey

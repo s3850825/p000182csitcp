@@ -14,41 +14,57 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MessageBoard(object):
     def setupUi(self, MessageBoard):
         MessageBoard.setObjectName("MessageBoard")
-        MessageBoard.resize(858, 763)
+        MessageBoard.resize(858, 838)
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(14)
         MessageBoard.setFont(font)
         self.label = QtWidgets.QLabel(MessageBoard)
         self.label.setGeometry(QtCore.QRect(220, 10, 451, 71))
-        font = QtGui.QFont()
-        font.setFamily("Arial")
         font.setPointSize(30)
         self.label.setFont(font)
         self.label.setObjectName("label")
         self.SendMessageButton = QtWidgets.QPushButton(MessageBoard)
-        self.SendMessageButton.setGeometry(QtCore.QRect(320, 690, 211, 51))
-        font = QtGui.QFont()
-        font.setFamily("Arial")
+        self.SendMessageButton.setGeometry(QtCore.QRect(320, 760, 211, 51))
         font.setPointSize(16)
         self.SendMessageButton.setFont(font)
         self.SendMessageButton.setObjectName("SendMessageButton")
         self.scrollArea_2 = QtWidgets.QScrollArea(MessageBoard)
-        self.scrollArea_2.setGeometry(QtCore.QRect(20, 80, 811, 581))
+        self.scrollArea_2.setGeometry(QtCore.QRect(20, 80, 811, 261))
         self.scrollArea_2.setWidgetResizable(True)
         self.scrollArea_2.setObjectName("scrollArea_2")
         self.scrollAreaWidgetContents_2 = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 809, 579))
+        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 809, 259))
         self.scrollAreaWidgetContents_2.setObjectName("scrollAreaWidgetContents_2")
         self.listWidget = QtWidgets.QListWidget(self.scrollAreaWidgetContents_2)
-        self.listWidget.setGeometry(QtCore.QRect(140, 20, 531, 531))
-        font = QtGui.QFont()
-        font.setFamily("Arial")
+        self.listWidget.setGeometry(QtCore.QRect(140, 20, 531, 221))
         font.setPointSize(20)
         self.listWidget.setFont(font)
         self.listWidget.setObjectName("listWidget")
         self.scrollArea_2.setWidget(self.scrollAreaWidgetContents_2)
-
+        self.Message = QtWidgets.QPlainTextEdit(MessageBoard)
+        self.Message.setGeometry(QtCore.QRect(230, 640, 401, 101))
+        font.setPointSize(16)
+        self.Message.setFont(font)
+        self.Message.setObjectName("Message")
+        self.labelMessage = QtWidgets.QLabel(MessageBoard)
+        self.labelMessage.setGeometry(QtCore.QRect(110, 660, 111, 51))
+        self.labelMessage.setFont(font)
+        self.labelMessage.setObjectName("labelMessage")
+        self.decryptButton = QtWidgets.QPushButton(MessageBoard)
+        self.decryptButton.setGeometry(QtCore.QRect(340, 530, 171, 51))
+        self.decryptButton.setFont(font)
+        self.decryptButton.setObjectName("decryptButton")
+        self.privateKeyText = QtWidgets.QTextEdit(MessageBoard)
+        self.privateKeyText.setGeometry(QtCore.QRect(230, 400, 401, 111))
+        self.privateKeyText.setObjectName("privateKeyText")
+        self.privateKeyLabel = QtWidgets.QLabel(MessageBoard)
+        self.privateKeyLabel.setGeometry(QtCore.QRect(40, 420, 171, 61))
+        self.privateKeyLabel.setFont(font)
+        self.privateKeyLabel.setObjectName("privateKeyLabel")
+        
+        self.listWidget.itemDoubleClicked.connect(self.showSelectedMessage)
+        self.receivedMessages = []
         self.retranslateUi(MessageBoard)
         QtCore.QMetaObject.connectSlotsByName(MessageBoard)
 
@@ -57,14 +73,46 @@ class Ui_MessageBoard(object):
         MessageBoard.setWindowTitle(_translate("MessageBoard", "Form"))
         self.label.setText(_translate("MessageBoard", "MESSAGE BOARD"))
         self.SendMessageButton.setText(_translate("MessageBoard", "Send message"))
+        self.labelMessage.setText(_translate("MessageBoard", "Message"))
+        self.decryptButton.setText(_translate("MessageBoard", "Decrypt"))
+        self.privateKeyLabel.setText(_translate("MessageBoard", "Your private key"))
 
     def showReceivedMessages(self, database, user):
+        self.listWidget.clear()
+        self.decryptButton.setEnabled(False)
+        self.privateKeyText.setEnabled(False)
         messages = database.getReceivedMessages(user.getStudentName())
         startNum = 1
-        
+        self.receivedMessages = messages
+
         for message in messages:
-            title = "[" + str(startNum) + "] A message from " + message[0]
+            title = "[" + str(startNum) + "] A " + message[2].lower() + " message from " + message[0]
             self.listWidget.addItem(title)
             startNum += 1
-        # for i in range(20):
-        #     self.listWidget.addItem(str(i))
+    
+    def showSelectedMessage(self, item):
+        self.Message.clear()
+        self.privateKeyText.clear()
+        messageInfo = self.receivedMessages[int(item.text()[1]) - 1]
+        if messageInfo[2] == 'PLAIN':
+            self.decryptButton.setEnabled(False)
+            self.privateKeyText.setEnabled(False)
+            self.showPlainMessage(messageInfo[3])
+        elif messageInfo[2] == 'ENCRYPT':
+            self.decryptButton.setEnabled(True)
+            self.privateKeyText.setEnabled(True)
+        elif messageInfo[2] == 'SIGNATURE':
+            self.decryptButton.setEnabled(True)
+            self.privateKeyText.setEnabled(True)
+
+    def showPlainMessage(self, message):
+        self.Message.clear()
+        self.Message.insertPlainText(message)
+
+    def getReceiverPrivateKey(self):
+        messageInfo = self.receivedMessages[int(self.listWidget.currentItem().text()[1]) - 1]
+        return self.privateKeyText.toPlainText(), messageInfo[3] 
+
+    def showDecryptedMessage(self, decryptMessage):
+        self.Message.clear()
+        self.Message.insertPlainText(decryptMessage)
