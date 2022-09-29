@@ -1,4 +1,4 @@
-from scripts.deploy import deploy_certification, create_certificate, get_certificate
+from scripts.deploy import *
 from scripts.verification import verify_signature
 from scripts.keyGeneration import *
 from Crypto.Hash import SHA256

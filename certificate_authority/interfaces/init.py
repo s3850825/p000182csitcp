@@ -8,6 +8,8 @@ from interfaces.MessageBoard import *
 from interfaces.KeyPairs import *
 from interfaces.user import *
 from interfaces.SendMessage import *
+from scripts.crypto import *
+from scripts.deploy import *
 from db.database import *
 from scripts.keyGeneration import *
 
@@ -82,7 +84,25 @@ def frontend_UI():
     # Plain text button event
     ui_send_message.PlainButton.clicked.connect(
         lambda: {
-            checkTheMessage(database, ui_send_message, widget_send_message)
+            checkPlainMessage(database, ui_send_message, widget_send_message)
+        }
+    )
+    # Encrypt text button event
+    ui_send_message.EncryptButton.clicked.connect(
+        lambda: {
+            checkEncryptMessage(database, ui_send_message, widget_send_message)
+        }
+    )
+    # Decrypt text button event
+    ui_message.decryptButton.clicked.connect(
+        lambda: {
+            getReceiverPrivateKey(database, ui_message)
+        }
+    )
+    # Signature text button event
+    ui_send_message.SignatureButton.clicked.connect(
+        lambda: {
+            getSenderPrivateKey(database, ui_send_message, widget_send_message)
         }
     )
 
@@ -92,13 +112,18 @@ def checkStudentInfo(database, studentInfo, ui_sign, widget_sign):
     studentName, studentPassword, studentPassword2, studentWalletPassword = studentInfo
     if database.checkUniqueStudentName(studentInfo[0]) and studentPassword == studentPassword2:
         database.insertNewStudent(studentName, studentPassword, studentWalletPassword)
+        
         ui_sign.reset()
         widget_sign.close()
-        print(studentInfo, 'registered!')
+        print(studentName, 'registered!')
         
         # We need to generate key pairs for the user and then save into DB
         privKey, pubKey = generate_RSA_key_pairs()
         database.updateNewStudentKeyPairs(privKey, pubKey, studentName)
+
+        # Blockchain
+        deploy_certification(studentWalletPassword)
+        create_certificate(studentName, pubKey, studentWalletPassword)
     else:
         ui_sign.reset()
         print(studentInfo[0], " cannot be registered")
@@ -125,7 +150,7 @@ def sendMessage(database, user, ui_send_message, widget_send_message):
     ui_send_message.showReceiverStudents(user, database)
     widget_send_message.show()
 
-def checkTheMessage(database, ui_send_message, widget_send_message):
+def checkPlainMessage(database, ui_send_message, widget_send_message):
     sender, receiver, message = ui_send_message.getUserInputForPlainText()
     if message != "":
         database.insertMessage(sender, receiver, message, "PLAIN")
@@ -134,3 +159,26 @@ def checkTheMessage(database, ui_send_message, widget_send_message):
     else:
         print("Message must not be null")
         
+def checkEncryptMessage(database, ui_send_message, widget_send_message):
+    sender, receiver, message = ui_send_message.getUserInputForPlainText()
+    if message != "":
+        # Encrypt message
+        encryptedMessage = encrypt_message(database, receiver, message)
+        database.insertMessage(sender, receiver, encryptedMessage, "ENCRYPT")
+        widget_send_message.close()
+        ui_send_message.clear()
+    else:
+        print("Message must not be null")
+
+def getReceiverPrivateKey(database, ui_message):
+    privKey, encryptedMessage = ui_message.getReceiverPrivateKey()
+    decryptMessage = decrypt_message(database, privKey, encryptedMessage)
+    ui_message.showDecryptedMessage(decryptMessage)
+
+def getSenderPrivateKey(database, ui_send_message, widget_send_message):
+    sender, receiver, message = ui_send_message.getUserInputForPlainText()
+    privKey, message = ui_send_message.getSenderPrivateKey()
+    signedMessage = sign_message(database, privKey, message)
+    database.insertMessage(sender, receiver, signedMessage, "SIGN")
+    widget_send_message.close()
+    ui_send_message.clear()

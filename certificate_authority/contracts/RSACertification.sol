@@ -6,11 +6,15 @@ contract RSACertification {
     struct Certificate {
         address certificate_owner;
         string name;
-        string public_key;
-        bytes32 signature_part1;
-        bytes32 signature_part2;
-        bytes32 signature_part3;
-        bytes32 signature_part4;
+        bytes32 public_key_part1;
+        bytes32 public_key_part2;
+        bytes32 public_key_part3;
+        bytes32 public_key_part4;
+        bytes32 public_key_part5;
+        bytes32 public_key_part6;
+        bytes32 public_key_part7;
+        bytes32 public_key_part8;
+        bytes32 public_key_part9;
         uint256 timestamp;
     }
 
@@ -19,45 +23,63 @@ contract RSACertification {
     // create a certificate
     function createCertificate(
         string memory _name,
-        string memory _public_key,
-        bytes32 _signature_part1,
-        bytes32 _signature_part2,
-        bytes32 _signature_part3,
-        bytes32 _signature_part4
+        bytes32 _public_key_part1,
+        bytes32 _public_key_part2,
+        bytes32 _public_key_part3,
+        bytes32 _public_key_part4,
+        bytes32 _public_key_part5,
+        bytes32 _public_key_part6,
+        bytes32 _public_key_part7,
+        bytes32 _public_key_part8,
+        bytes32 _public_key_part9
     ) public {
         nameToCertificate[msg.sender] = Certificate(
             msg.sender,
             _name,
-            _public_key,
-            _signature_part1,
-            _signature_part2,
-            _signature_part3,
-            _signature_part4,
+            _public_key_part1,
+            _public_key_part2,
+            _public_key_part3,
+            _public_key_part4,
+            _public_key_part5,
+            _public_key_part6,
+            _public_key_part7,
+            _public_key_part8,
+            _public_key_part9,
             block.timestamp
         );
     }
 
     // signature using RSA
-    function signWithRSA() private view returns (bytes32[] memory) {
-        bytes32[] memory signatures = new bytes32[](4);
-        signatures[0] = nameToCertificate[msg.sender].signature_part1;
-        signatures[1] = nameToCertificate[msg.sender].signature_part2;
-        signatures[2] = nameToCertificate[msg.sender].signature_part3;
-        signatures[3] = nameToCertificate[msg.sender].signature_part4;
-        return signatures;
-    }
+    // function signWithRSA() private view returns (bytes32[] memory) {
+    //     bytes32[] memory signatures = new bytes32[](4);
+    //     signatures[0] = nameToCertificate[msg.sender].signature_part1;
+    //     signatures[1] = nameToCertificate[msg.sender].signature_part2;
+    //     signatures[2] = nameToCertificate[msg.sender].signature_part3;
+    //     signatures[3] = nameToCertificate[msg.sender].signature_part4;
+    //     return signatures;
+    // }
 
     // verification using RSA
-    function verifyWithRSA(bool result) public view returns (bool) {
-        return result;
-    }
+    // function verifyWithRSA(bool result) public view returns (bool) {
+    //     return result;
+    // }
 
     function getName() public view returns (string memory) {
         return nameToCertificate[msg.sender].name;
     }
 
-    function getSignedPublicKey() public view returns (bytes32[] memory) {
-        return signWithRSA();
+    function getPublicKey() public view returns (bytes32[] memory) {
+        bytes32[] memory public_keys = new bytes32[](9);
+        public_keys[0] = nameToCertificate[msg.sender].public_key_part1;
+        public_keys[1] = nameToCertificate[msg.sender].public_key_part2;
+        public_keys[2] = nameToCertificate[msg.sender].public_key_part3;
+        public_keys[3] = nameToCertificate[msg.sender].public_key_part4;
+        public_keys[4] = nameToCertificate[msg.sender].public_key_part5;
+        public_keys[5] = nameToCertificate[msg.sender].public_key_part6;
+        public_keys[6] = nameToCertificate[msg.sender].public_key_part7;
+        public_keys[7] = nameToCertificate[msg.sender].public_key_part8;
+        public_keys[8] = nameToCertificate[msg.sender].public_key_part9;
+        return public_keys;
     }
 
     function getTimestamp() public view returns (uint256) {
