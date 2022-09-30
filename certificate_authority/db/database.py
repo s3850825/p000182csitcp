@@ -22,7 +22,6 @@ class Database():
         self.c.execute(query)
 
     def insertNewStudent(self, username, password, walletPassword):
-        # query = "INSERT INTO student VALUES('?, " + username + "', '" + password + "', '" + walletPassword + "', ?, ?)"
         query = "INSERT INTO student (id, username, password, walletPassword, publicKey, privateKey) VALUES (?, ?, ?, ?, ?, ?)"
         self.c.execute(query, (None, username, password, walletPassword, None, None,))
 
@@ -53,20 +52,20 @@ class Database():
     def getStudentWalletPassword(self, username):
         query = "SELECT walletPassword FROM student WHERE username=:username"
         self.c.execute(query, {'username': username})
-        result = self.c.fetchall()
-        return result[0][0]
+        walletPW = self.c.fetchall()
+        return walletPW[0][0]
     
     def getStudentPrivateKey(self, username):
         query = "SELECT privateKey FROM student WHERE username=:username"
         self.c.execute(query, {'username': username})
-        result = self.c.fetchall()
-        return result[0][0]
+        privKey = self.c.fetchall()
+        return privKey[0][0]
 
     def getStudentPublicKey(self, username):
         query = "SELECT publicKey FROM student WHERE username=:username"
         self.c.execute(query, {'username': username})
-        result = self.c.fetchall()
-        return result[0][0]
+        pubKey = self.c.fetchall()
+        return pubKey[0][0]
     
     def getAllStudents(self):
         query = "SELECT username FROM student"
@@ -84,19 +83,19 @@ class Database():
     def getReceivedMessages(self, username):
         query = "SELECT * FROM message WHERE receiver=:username"
         self.c.execute(query, {'username': username})
-        result = self.c.fetchall()
-        return result
+        allMessages = self.c.fetchall()
+        return allMessages
     
     def getUserIndexUsingWalletPassword(self, walletPassword):
         query = "SELECT id FROM student WHERE walletPassword=:walletPassword"
         self.c.execute(query, {'walletPassword': walletPassword})
-        result1 = self.c.fetchall()
+        userIndex = self.c.fetchall()
 
         query = "SELECT count(*) FROM student"
         self.c.execute(query)
-        result2 = self.c.fetchall()
+        totalUserNumber = self.c.fetchall()
  
-        return result1[0][0] - result2[0][0] - 1
+        return userIndex[0][0] - totalUserNumber[0][0] - 1
 
     def backupDB(self):
         with self.conn:
