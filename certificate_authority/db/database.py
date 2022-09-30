@@ -6,8 +6,8 @@ class Database():
         # isolation_level=None is for auto commit
         self.conn = sqlite3.connect(self.DATABASE_FILE, isolation_level=None)
         self.c = self.conn.cursor()
-        self.executeQuery("CREATE TABLE IF NOT EXISTS student (username text PRIMARY KEY, password text, walletPassword text, publicKey blob, privateKey blob)")
-        self.executeQuery("CREATE TABLE IF NOT EXISTS message (sender text, receiver text, type text, message blob)")
+        self.executeQuery("CREATE TABLE IF NOT EXISTS student (id integer PRIMARY KEY AUTOINCREMENT, username text, password text, walletPassword text, publicKey blob, privateKey blob)")
+        self.executeQuery("CREATE TABLE IF NOT EXISTS message (sender text, receiver text, type text, message blob, og_message text)")
 
     def database(self):
         # connect to DB
@@ -22,8 +22,9 @@ class Database():
         self.c.execute(query)
 
     def insertNewStudent(self, username, password, walletPassword):
-        query = "INSERT INTO student VALUES('" + username + "', '" + password + "', '" + walletPassword + "', ?, ?)"
-        self.c.execute(query, (None, None,))
+        # query = "INSERT INTO student VALUES('?, " + username + "', '" + password + "', '" + walletPassword + "', ?, ?)"
+        query = "INSERT INTO student (id, username, password, walletPassword, publicKey, privateKey) VALUES (?, ?, ?, ?, ?, ?)"
+        self.c.execute(query, (None, username, password, walletPassword, None, None,))
 
     def updateNewStudentKeyPairs(self, privKey, pubKey, username):
         query = "UPDATE student set privateKey = ?,  publicKey = ? WHERE username = ?"
@@ -76,15 +77,26 @@ class Database():
             studentList.append(student[0])
         return studentList
 
-    def insertMessage(self, sender, receiver, message, messageType):
-        query = "INSERT INTO message VALUES('" + sender + "', '" + receiver + "', '" + messageType + "', ?)"
-        self.c.execute(query, (message,))
+    def insertMessage(self, sender, receiver, message, og_message, messageType):
+        query = "INSERT INTO message VALUES('" + sender + "', '" + receiver + "', '" + messageType + "', ?, ?)"
+        self.c.execute(query, (message, og_message,))
 
     def getReceivedMessages(self, username):
         query = "SELECT * FROM message WHERE receiver=:username"
         self.c.execute(query, {'username': username})
         result = self.c.fetchall()
         return result
+    
+    def getUserIndexUsingWalletPassword(self, walletPassword):
+        query = "SELECT id FROM student WHERE walletPassword=:walletPassword"
+        self.c.execute(query, {'walletPassword': walletPassword})
+        result1 = self.c.fetchall()
+
+        query = "SELECT count(*) FROM student"
+        self.c.execute(query)
+        result2 = self.c.fetchall()
+ 
+        return result1[0][0] - result2[0][0] - 1
 
     def backupDB(self):
         with self.conn:

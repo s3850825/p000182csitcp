@@ -44,5 +44,17 @@ class Ui_KeyPairs(object):
         self.pubKeyLabel.setText(_translate("KeyPairs", "Public Key"))
     
     def showStudentKeyPairs(self, user):
-        self.privKey.setText(str(user.getPrivateKey()))
-        self.pubKey.setText(str(user.getPublicKey()))
+        privKeyStr = str(user.getPrivateKey())
+        privKeyStr = privKeyStr[2:len(privKeyStr) - 1]
+        print("--\n" + privKeyStr +"--\n")
+        privKey = privKeyStr.replace(r"\n", '').replace(r"\r", '')
+        print("--\n" +privKey + "--\n")
+
+        pubKeyStr = str(user.getPublicKey())
+        pubKeyStr = pubKeyStr[2:len(pubKeyStr) - 1]
+        print("--\n", pubKeyStr, "--\n")
+        pubKey = pubKeyStr.replace(r"\n", '').replace(r"\r", '')
+        print("--\n" +pubKey + "--\n")
+        
+        self.privKey.setText(privKey)
+        self.pubKey.setText(pubKey)

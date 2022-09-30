@@ -9,7 +9,9 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-
+from PyQt5.QtCore import QDir
+from PyQt5.QtWidgets import QApplication, QInputDialog, QFileDialog
+from scripts.crypto import *
 
 class Ui_Send_Message(object):
     def setupUi(self, SendMessage):
@@ -53,17 +55,13 @@ class Ui_Send_Message(object):
         self.SenderName.setGeometry(QtCore.QRect(340, 110, 171, 41))
         self.SenderName.setFont(font)
         self.SenderName.setObjectName("SenderName")
+        font.setPointSize(16)
         self.comboBoxReceiver = QtWidgets.QComboBox(SendMessage)
         self.comboBoxReceiver.setGeometry(QtCore.QRect(340, 170, 181, 31))
-        font.setPointSize(12)
         self.comboBoxReceiver.setFont(font)
         self.comboBoxReceiver.setObjectName("comboBoxReceiver")
-        self.privKeyText = QtWidgets.QTextEdit(SendMessage)
-        self.privKeyText.setGeometry(QtCore.QRect(170, 570, 351, 91))
-        self.privKeyText.setFont(font)
-        self.privKeyText.setObjectName("privKeyText")
         self.label = QtWidgets.QLabel(SendMessage)
-        self.label.setGeometry(QtCore.QRect(10, 590, 151, 41))
+        self.label.setGeometry(QtCore.QRect(20, 590, 151, 41))
         self.label.setFont(font)
         self.label.setObjectName("label")
 
@@ -97,5 +95,9 @@ class Ui_Send_Message(object):
     def getUserInputForPlainText(self):
         return self.SenderName.text(), self.comboBoxReceiver.currentText(), self.textMessage.toPlainText()
 
-    def getSenderPrivateKey(self):
-        return self.privKeyText.toPlainText(), self.textMessage.toPlainText()
+    def getSenderPrivateKeyAndMessage(self):
+        file_name = QFileDialog.getOpenFileName()
+        path = file_name[0]
+        privKey = load_priv_key(path)
+
+        return privKey, self.textMessage.toPlainText()

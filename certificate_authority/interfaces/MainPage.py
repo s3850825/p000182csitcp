@@ -19,12 +19,12 @@ class Ui_MainPage(object):
         font.setFamily("Arial")
         MainPage.setFont(font)
         self.WelcomeMessage = QtWidgets.QLabel(MainPage)
-        self.WelcomeMessage.setGeometry(QtCore.QRect(140, 100, 210, 51))
+        self.WelcomeMessage.setGeometry(QtCore.QRect(150, 100, 210, 51))
         font.setPointSize(30)
         self.WelcomeMessage.setFont(font)
         self.WelcomeMessage.setObjectName("WelcomeMessage")
         self.StudentName = QtWidgets.QLabel(MainPage)
-        self.StudentName.setGeometry(QtCore.QRect(395, 100, 130, 51))
+        self.StudentName.setGeometry(QtCore.QRect(380, 100, 130, 51))
         self.StudentName.setFont(font)
         self.StudentName.setObjectName("StudentName")
         self.LinkBtnMessageBoard = QtWidgets.QCommandLinkButton(MainPage)
@@ -32,10 +32,6 @@ class Ui_MainPage(object):
         font.setPointSize(20)
         self.LinkBtnMessageBoard.setFont(font)
         self.LinkBtnMessageBoard.setObjectName("LinkBtnMessageBoard")
-        self.LinkBtnKeyPairs = QtWidgets.QCommandLinkButton(MainPage)
-        self.LinkBtnKeyPairs.setGeometry(QtCore.QRect(190, 370, 311, 61))
-        self.LinkBtnKeyPairs.setFont(font)
-        self.LinkBtnKeyPairs.setObjectName("LinkBtnKeyPairs")
 
         self.retranslateUi(MainPage)
         QtCore.QMetaObject.connectSlotsByName(MainPage)
@@ -46,7 +42,6 @@ class Ui_MainPage(object):
         self.WelcomeMessage.setText(_translate("MainPage", "Welcome"))
         self.StudentName.setText(_translate("MainPage", "Name"))
         self.LinkBtnMessageBoard.setText(_translate("MainPage", "Message  board"))
-        self.LinkBtnKeyPairs.setText(_translate("MainPage", "Key pairs"))
 
 
     def showStudentName(self, user):

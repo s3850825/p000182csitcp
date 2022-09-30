@@ -9,7 +9,9 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-
+from PyQt5.QtCore import QDir
+from PyQt5.QtWidgets import QApplication, QInputDialog, QFileDialog
+from scripts.crypto import *
 
 class Ui_MessageBoard(object):
     def setupUi(self, MessageBoard):
@@ -48,20 +50,25 @@ class Ui_MessageBoard(object):
         self.Message.setFont(font)
         self.Message.setObjectName("Message")
         self.labelMessage = QtWidgets.QLabel(MessageBoard)
-        self.labelMessage.setGeometry(QtCore.QRect(110, 660, 111, 51))
+        self.labelMessage.setGeometry(QtCore.QRect(380, 580, 111, 51))
         self.labelMessage.setFont(font)
         self.labelMessage.setObjectName("labelMessage")
         self.decryptButton = QtWidgets.QPushButton(MessageBoard)
-        self.decryptButton.setGeometry(QtCore.QRect(340, 530, 171, 51))
+        self.decryptButton.setGeometry(QtCore.QRect(180, 480, 171, 51))
         self.decryptButton.setFont(font)
         self.decryptButton.setObjectName("decryptButton")
-        self.privateKeyText = QtWidgets.QTextEdit(MessageBoard)
-        self.privateKeyText.setGeometry(QtCore.QRect(230, 400, 401, 111))
-        self.privateKeyText.setObjectName("privateKeyText")
+        self.validateButton = QtWidgets.QPushButton(MessageBoard)
+        self.validateButton.setGeometry(QtCore.QRect(500, 480, 171, 51))
+        self.validateButton.setFont(font)
+        self.validateButton.setObjectName("validateButton")
         self.privateKeyLabel = QtWidgets.QLabel(MessageBoard)
-        self.privateKeyLabel.setGeometry(QtCore.QRect(40, 420, 171, 61))
+        self.privateKeyLabel.setGeometry(QtCore.QRect(115, 390, 330, 61))
         self.privateKeyLabel.setFont(font)
         self.privateKeyLabel.setObjectName("privateKeyLabel")
+        self.validationLabel = QtWidgets.QLabel(MessageBoard)
+        self.validationLabel.setGeometry(QtCore.QRect(570, 390, 200, 61))
+        self.validationLabel.setFont(font)
+        self.validationLabel.setObjectName("validationLabel")
         
         self.listWidget.itemDoubleClicked.connect(self.showSelectedMessage)
         self.receivedMessages = []
@@ -75,12 +82,16 @@ class Ui_MessageBoard(object):
         self.SendMessageButton.setText(_translate("MessageBoard", "Send message"))
         self.labelMessage.setText(_translate("MessageBoard", "Message"))
         self.decryptButton.setText(_translate("MessageBoard", "Decrypt"))
-        self.privateKeyLabel.setText(_translate("MessageBoard", "Your private key"))
+        self.validateButton.setText(_translate("MessageBoard", "Validate"))
+        self.privateKeyLabel.setText(_translate("MessageBoard", "Your private key is required"))
+        self.validationLabel.setText(_translate("MessageBoard", ""))
 
     def showReceivedMessages(self, database, user):
         self.listWidget.clear()
+        self.Message.clear()
+        self.privateKeyLabel.setHidden(True)
         self.decryptButton.setEnabled(False)
-        self.privateKeyText.setEnabled(False)
+        self.validateButton.setEnabled(False)
         messages = database.getReceivedMessages(user.getStudentName())
         startNum = 1
         self.receivedMessages = messages
@@ -92,27 +103,44 @@ class Ui_MessageBoard(object):
     
     def showSelectedMessage(self, item):
         self.Message.clear()
-        self.privateKeyText.clear()
+        self.validationLabel.setText("")
         messageInfo = self.receivedMessages[int(item.text()[1]) - 1]
         if messageInfo[2] == 'PLAIN':
             self.decryptButton.setEnabled(False)
-            self.privateKeyText.setEnabled(False)
+            self.privateKeyLabel.setHidden(True)
+            self.validateButton.setEnabled(False)
             self.showPlainMessage(messageInfo[3])
         elif messageInfo[2] == 'ENCRYPT':
+            self.privateKeyLabel.setHidden(False)
             self.decryptButton.setEnabled(True)
-            self.privateKeyText.setEnabled(True)
-        elif messageInfo[2] == 'SIGNATURE':
-            self.decryptButton.setEnabled(True)
-            self.privateKeyText.setEnabled(True)
+            self.validateButton.setEnabled(False)
+        elif messageInfo[2] == 'SIGN':
+            self.privateKeyLabel.setHidden(True)
+            self.decryptButton.setEnabled(False)
+            self.validateButton.setEnabled(True)
+            self.showPlainMessage(messageInfo[4])
 
     def showPlainMessage(self, message):
         self.Message.clear()
         self.Message.insertPlainText(message)
 
-    def getReceiverPrivateKey(self):
-        messageInfo = self.receivedMessages[int(self.listWidget.currentItem().text()[1]) - 1]
-        return self.privateKeyText.toPlainText(), messageInfo[3] 
-
     def showDecryptedMessage(self, decryptMessage):
         self.Message.clear()
         self.Message.insertPlainText(decryptMessage)
+    
+    def uploadPrivateKey(self, database):
+        file_name = QFileDialog.getOpenFileName()
+        path = file_name[0]
+        messageInfo = self.receivedMessages[int(self.listWidget.currentItem().text()[1]) - 1]
+        decryptMessage = decrypt_message(path, messageInfo[3])
+        self.showDecryptedMessage(decryptMessage)
+    
+    def getSignedMessage(self):
+        messageInfo = self.receivedMessages[int(self.listWidget.currentItem().text()[1]) - 1]
+        return messageInfo[0], messageInfo[3], messageInfo[4]
+
+    def showVerificationResult(self, result):
+        if result:
+            self.validationLabel.setText("True")
+        else:
+            self.Message.insertPlainText("False")
