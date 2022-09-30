@@ -18,7 +18,7 @@ class Ui_Send_Message(object):
         SendMessage.setObjectName("SendMessage")
         SendMessage.resize(681, 743)
         self.PlainButton = QtWidgets.QCommandLinkButton(SendMessage)
-        self.PlainButton.setGeometry(QtCore.QRect(270, 450, 141, 51))
+        self.PlainButton.setGeometry(QtCore.QRect(270, 490, 141, 51))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(16)
@@ -35,11 +35,11 @@ class Ui_Send_Message(object):
         self.textMessage.setFont(font)
         self.textMessage.setObjectName("textMessage")
         self.EncryptButton = QtWidgets.QCommandLinkButton(SendMessage)
-        self.EncryptButton.setGeometry(QtCore.QRect(270, 500, 141, 51))
+        self.EncryptButton.setGeometry(QtCore.QRect(270, 560, 141, 51))
         self.EncryptButton.setFont(font)
         self.EncryptButton.setObjectName("EncryptButton")
         self.SignatureButton = QtWidgets.QCommandLinkButton(SendMessage)
-        self.SignatureButton.setGeometry(QtCore.QRect(270, 670, 141, 51))
+        self.SignatureButton.setGeometry(QtCore.QRect(270, 630, 141, 51))
         self.SignatureButton.setFont(font)
         self.SignatureButton.setObjectName("SignatureButton")
         self.Sender = QtWidgets.QLabel(SendMessage)
@@ -60,10 +60,6 @@ class Ui_Send_Message(object):
         self.comboBoxReceiver.setGeometry(QtCore.QRect(340, 170, 181, 31))
         self.comboBoxReceiver.setFont(font)
         self.comboBoxReceiver.setObjectName("comboBoxReceiver")
-        self.label = QtWidgets.QLabel(SendMessage)
-        self.label.setGeometry(QtCore.QRect(20, 590, 151, 41))
-        self.label.setFont(font)
-        self.label.setObjectName("label")
 
         self.retranslateUi(SendMessage)
         QtCore.QMetaObject.connectSlotsByName(SendMessage)
@@ -78,7 +74,6 @@ class Ui_Send_Message(object):
         self.Sender.setText(_translate("SendMessage", "Sender"))
         self.Receiver.setText(_translate("SendMessage", "Receiver"))
         self.SenderName.setText(_translate("SendMessage", "SenderName"))
-        self.label.setText(_translate("SendMessage", "Your private key"))
 
     def showStudentName(self, user):
         self.SenderName.setText(user.getStudentName())
@@ -86,6 +81,7 @@ class Ui_Send_Message(object):
     def showReceiverStudents(self, user, database):
         studentList = database.getAllStudents() 
         studentList.remove(user.getStudentName())
+        self.comboBoxReceiver.clear()
         self.comboBoxReceiver.addItems(studentList)
     
     def clear(self):
