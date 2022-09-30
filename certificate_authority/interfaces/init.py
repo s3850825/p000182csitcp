@@ -115,7 +115,7 @@ def checkStudentInfo(database, studentInfo, ui_sign, widget_sign):
         
         ui_sign.reset()
         widget_sign.close()
-        print(studentName, 'registered!')
+        print("[", studentName, 'is registered!]')
         
         # We need to generate key pairs for the user and then save into DB
         privKey, pubKey = generate_RSA_key_pairs()
@@ -126,7 +126,7 @@ def checkStudentInfo(database, studentInfo, ui_sign, widget_sign):
         create_certificate(studentName, pubKey, studentWalletPassword)
     else:
         ui_sign.reset()
-        print(studentInfo[0], " cannot be registered")
+        print("[", studentInfo[0], " is already registered]")
 
 def checkLoginInfo(database, studentInfo, ui, widget_login, widget_MainPage, user, ui_mainPage):
     studentName, studentPassword = studentInfo
@@ -139,7 +139,7 @@ def checkLoginInfo(database, studentInfo, ui, widget_login, widget_MainPage, use
         widget_MainPage.show()
     else:
         ui.reset()
-        print("Log in information is not correct")
+        print("[Log in information is not correct]")
 
 def showStudentKeyPairs(database, user, ui_keyPairsPage, widget_keyPairs):
     ui_keyPairsPage.showStudentKeyPairs(user)
@@ -157,7 +157,7 @@ def checkPlainMessage(database, ui_send_message, widget_send_message):
         widget_send_message.close()
         ui_send_message.clear()
     else:
-        print("Message must not be null")
+        print("[Message must not be null]")
         
 def checkEncryptMessage(database, ui_send_message, widget_send_message):
     sender, receiver, message = ui_send_message.getUserInputForPlainText()
@@ -168,7 +168,7 @@ def checkEncryptMessage(database, ui_send_message, widget_send_message):
         widget_send_message.close()
         ui_send_message.clear()
     else:
-        print("Message must not be null")
+        print("[Message must not be null]")
 
 def getReceiverPrivateKey(database, ui_message):
     privKey, encryptedMessage = ui_message.getReceiverPrivateKey()
