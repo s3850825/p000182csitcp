@@ -6,15 +6,15 @@ contract RSACertification {
     struct Certificate {
         address certificate_owner;
         string name;
-        bytes32 public_key_part1;
-        bytes32 public_key_part2;
-        bytes32 public_key_part3;
-        bytes32 public_key_part4;
-        bytes32 public_key_part5;
-        bytes32 public_key_part6;
-        bytes32 public_key_part7;
-        bytes32 public_key_part8;
-        bytes32 public_key_part9;
+        bytes public_key_part1;
+        bytes public_key_part2;
+        bytes public_key_part3;
+        bytes public_key_part4;
+        bytes public_key_part5;
+        bytes public_key_part6;
+        bytes public_key_part7;
+        bytes public_key_part8;
+        bytes public_key_part9;
         uint256 timestamp;
     }
 
@@ -23,15 +23,15 @@ contract RSACertification {
     // create a certificate
     function createCertificate(
         string memory _name,
-        bytes32 _public_key_part1,
-        bytes32 _public_key_part2,
-        bytes32 _public_key_part3,
-        bytes32 _public_key_part4,
-        bytes32 _public_key_part5,
-        bytes32 _public_key_part6,
-        bytes32 _public_key_part7,
-        bytes32 _public_key_part8,
-        bytes32 _public_key_part9
+        bytes memory _public_key_part1,
+        bytes memory _public_key_part2,
+        bytes memory _public_key_part3,
+        bytes memory _public_key_part4,
+        bytes memory _public_key_part5,
+        bytes memory _public_key_part6,
+        bytes memory _public_key_part7,
+        bytes memory _public_key_part8,
+        bytes memory _public_key_part9
     ) public {
         nameToCertificate[msg.sender] = Certificate(
             msg.sender,
@@ -68,8 +68,8 @@ contract RSACertification {
         return nameToCertificate[msg.sender].name;
     }
 
-    function getPublicKey() public view returns (bytes32[] memory) {
-        bytes32[] memory public_keys = new bytes32[](9);
+    function getPublicKey() public view returns (bytes[] memory) {
+        bytes[] memory public_keys = new bytes[](9);
         public_keys[0] = nameToCertificate[msg.sender].public_key_part1;
         public_keys[1] = nameToCertificate[msg.sender].public_key_part2;
         public_keys[2] = nameToCertificate[msg.sender].public_key_part3;

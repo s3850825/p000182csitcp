@@ -10,6 +10,8 @@ def encrypt_message(database, receiver, message):
     # pubKey1 = database.getStudentPublicKey(receiver)
     # This is from Blockchain
     walletPassword = database.getStudentWalletPassword(receiver)
+    print("[Retrieve ", receiver, "'s public key from Blockchain]")
+    print(walletPassword)
     pubKey = get_public_key(walletPassword)
     cipher = PKCS1_v1_5.new(RSA.importKey(pubKey))
     encrypt_message = cipher.encrypt(message.encode())
@@ -20,7 +22,7 @@ def decrypt_message(database, privKey, encryptedMessage):
         decipher = PKCS1_v1_5.new(RSA.importKey(privKey))
         decryptMessage = decipher.decrypt(encryptedMessage, None).decode()
     except:
-        print("Invalid private key")
+        print("[Invalid private key]")
         return ""
 
     return decryptMessage
