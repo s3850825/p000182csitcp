@@ -32,6 +32,10 @@ class Ui_MainPage(object):
         font.setPointSize(20)
         self.LinkBtnMessageBoard.setFont(font)
         self.LinkBtnMessageBoard.setObjectName("LinkBtnMessageBoard")
+        self.DownloadKeyButton = QtWidgets.QCommandLinkButton(MainPage)
+        self.DownloadKeyButton.setGeometry(QtCore.QRect(190, 380, 370, 61))
+        self.DownloadKeyButton.setFont(font)
+        self.DownloadKeyButton.setObjectName("DownloadKeyButton")
 
         self.retranslateUi(MainPage)
         QtCore.QMetaObject.connectSlotsByName(MainPage)
@@ -42,7 +46,21 @@ class Ui_MainPage(object):
         self.WelcomeMessage.setText(_translate("MainPage", "Welcome"))
         self.StudentName.setText(_translate("MainPage", "Name"))
         self.LinkBtnMessageBoard.setText(_translate("MainPage", "Message  board"))
+        self.DownloadKeyButton.setText(_translate("MainPage", "Download key pairs"))
 
 
     def showStudentName(self, user):
         self.StudentName.setText(user.getStudentName() + '!')
+
+    def downloadKeyPairs(self, database, user):
+        studentName = user.getStudentName()
+        privKey = user.getPrivateKey()
+        pubKey = user.getPublicKey()
+        #save PEM key into the file
+        with open(studentName + '_2_private.pem', 'wb') as file:
+            file.write(privKey)
+
+        with open(studentName + '_2_public.pem', 'wb') as file:
+            file.write(pubKey)
+        
+        print("[ Keypairs are downloaded ]")
