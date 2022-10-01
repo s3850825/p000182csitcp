@@ -13,7 +13,7 @@ def encrypt_message(database, receiver, message):
     walletPassword = database.getStudentWalletPassword(receiver)
     print("[ Retrieve", receiver, "'s public key from Blockchain ]")
 
-    # get receiver's public key
+    # get receiver's public key from Blockchain
     pubKey = get_public_key(walletPassword, database)
     # encrypt message
     cipher = PKCS1_v1_5.new(RSA.importKey(pubKey))
@@ -61,6 +61,8 @@ def sign_message(database, privKey, message):
 def verify_message(database, sender, signedMessage, og_message):
     walletPassword = database.getStudentWalletPassword(sender)
     print("[ Retrieve", sender, "'s public key from Blockchain ]")
+    
+    # get receiver's public key from Blockchain
     pubKey = get_public_key(walletPassword, database)
 
     # verify the signed message by using sender's public key

@@ -54,6 +54,12 @@ def frontend_UI():
             widget_message.show()
         }
     )
+    # Download key pairs button event
+    ui_mainPage.DownloadKeyButton.clicked.connect(
+        lambda: {
+            ui_mainPage.downloadKeyPairs(database, user)
+        }
+    )    
     # Register button event
     ui.LinkBtnRegister.clicked.connect(
         lambda: {

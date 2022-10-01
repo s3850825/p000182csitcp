@@ -97,7 +97,10 @@ class Ui_MessageBoard(object):
         self.receivedMessages = messages
 
         for message in messages:
-            title = "[" + str(startNum) + "] A " + message[2].lower() + " message from " + message[0]
+            messageType = message[2].lower()
+            if message[2] != 'PLAIN':
+                messageType += "ed"
+            title = "[" + str(startNum) + "] A " + messageType + " message from " + message[0]
             self.listWidget.addItem(title)
             startNum += 1
     
