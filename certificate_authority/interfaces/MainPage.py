@@ -28,14 +28,22 @@ class Ui_MainPage(object):
         self.StudentName.setFont(font)
         self.StudentName.setObjectName("StudentName")
         self.LinkBtnMessageBoard = QtWidgets.QCommandLinkButton(MainPage)
-        self.LinkBtnMessageBoard.setGeometry(QtCore.QRect(190, 300, 311, 61))
+        self.LinkBtnMessageBoard.setGeometry(QtCore.QRect(190, 270, 370, 61))
         font.setPointSize(20)
         self.LinkBtnMessageBoard.setFont(font)
         self.LinkBtnMessageBoard.setObjectName("LinkBtnMessageBoard")
         self.DownloadKeyButton = QtWidgets.QCommandLinkButton(MainPage)
-        self.DownloadKeyButton.setGeometry(QtCore.QRect(190, 380, 370, 61))
+        self.DownloadKeyButton.setGeometry(QtCore.QRect(190, 350, 370, 61))
         self.DownloadKeyButton.setFont(font)
         self.DownloadKeyButton.setObjectName("DownloadKeyButton")
+        self.SendMessageButton = QtWidgets.QCommandLinkButton(MainPage)
+        self.SendMessageButton.setGeometry(QtCore.QRect(190, 430, 370, 61))
+        self.SendMessageButton.setFont(font)
+        self.SendMessageButton.setObjectName("SendMessageButton")
+        self.LogOutButton = QtWidgets.QCommandLinkButton(MainPage)
+        self.LogOutButton.setGeometry(QtCore.QRect(190, 510, 370, 61))
+        self.LogOutButton.setFont(font)
+        self.LogOutButton.setObjectName("LogOutButton")
 
         self.retranslateUi(MainPage)
         QtCore.QMetaObject.connectSlotsByName(MainPage)
@@ -45,9 +53,10 @@ class Ui_MainPage(object):
         MainPage.setWindowTitle(_translate("MainPage", "Form"))
         self.WelcomeMessage.setText(_translate("MainPage", "Welcome"))
         self.StudentName.setText(_translate("MainPage", "Name"))
-        self.LinkBtnMessageBoard.setText(_translate("MainPage", "Message  board"))
+        self.LinkBtnMessageBoard.setText(_translate("MainPage", "Check messages"))
         self.DownloadKeyButton.setText(_translate("MainPage", "Download key pairs"))
-
+        self.SendMessageButton.setText(_translate("MainPage", "Send a message"))
+        self.LogOutButton.setText(_translate("MainPage", "Log out"))
 
     def showStudentName(self, user):
         self.StudentName.setText(user.getStudentName() + '!')
@@ -64,3 +73,8 @@ class Ui_MainPage(object):
             file.write(pubKey)
         
         print("[ Keypairs are downloaded ]")
+
+    def logout(self, user, widget_MainPage, widget_login):
+        user = None
+        widget_MainPage.close()
+        widget_login.show()

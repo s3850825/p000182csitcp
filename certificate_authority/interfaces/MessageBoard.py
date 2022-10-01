@@ -26,27 +26,41 @@ class Ui_MessageBoard(object):
         font.setPointSize(30)
         self.label.setFont(font)
         self.label.setObjectName("label")
-        self.SendMessageButton = QtWidgets.QPushButton(MessageBoard)
-        self.SendMessageButton.setGeometry(QtCore.QRect(320, 760, 211, 51))
         font.setPointSize(16)
-        self.SendMessageButton.setFont(font)
-        self.SendMessageButton.setObjectName("SendMessageButton")
         self.scrollArea_2 = QtWidgets.QScrollArea(MessageBoard)
-        self.scrollArea_2.setGeometry(QtCore.QRect(20, 80, 811, 261))
+        self.scrollArea_2.setGeometry(QtCore.QRect(20, 80, 811, 291))
         self.scrollArea_2.setWidgetResizable(True)
         self.scrollArea_2.setObjectName("scrollArea_2")
         self.scrollAreaWidgetContents_2 = QtWidgets.QWidget()
         self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 809, 259))
         self.scrollAreaWidgetContents_2.setObjectName("scrollAreaWidgetContents_2")
+        font.setPointSize(16)
+        self.NumberLabel = QtWidgets.QLabel(self.scrollAreaWidgetContents_2)
+        self.NumberLabel.setGeometry(QtCore.QRect(56, 20, 64, 15))
+        self.NumberLabel.setFont(font)
+        self.NumberLabel.setObjectName("NumberLabel")
+        self.SenderLabel = QtWidgets.QLabel(MessageBoard)
+        self.SenderLabel.setGeometry(QtCore.QRect(110, 100, 68, 15))
+        self.SenderLabel.setFont(font)
+        self.SenderLabel.setObjectName("SenderLabel")
+        self.TimeLabel = QtWidgets.QLabel(self.scrollAreaWidgetContents_2)
+        self.TimeLabel.setGeometry(QtCore.QRect(200, 20, 64, 15))
+        self.TimeLabel.setFont(font)
+        self.TimeLabel.setObjectName("TimeLabel")
+        self.MessageTypeLabel = QtWidgets.QLabel(self.scrollAreaWidgetContents_2)
+        self.MessageTypeLabel.setGeometry(QtCore.QRect(430, 10, 150, 31))
+        self.MessageTypeLabel.setFont(font)
+        self.MessageTypeLabel.setObjectName("MessageTypeLabel")
+        font.setPointSize(16)
         self.listWidget = QtWidgets.QListWidget(self.scrollAreaWidgetContents_2)
-        self.listWidget.setGeometry(QtCore.QRect(140, 20, 531, 221))
-        font.setPointSize(20)
+        self.listWidget.setGeometry(QtCore.QRect(50, 50, 701, 221))
+        font.setPointSize(16)
         self.listWidget.setFont(font)
         self.listWidget.setObjectName("listWidget")
         self.scrollArea_2.setWidget(self.scrollAreaWidgetContents_2)
         self.Message = QtWidgets.QPlainTextEdit(MessageBoard)
         self.Message.setGeometry(QtCore.QRect(230, 640, 401, 101))
-        font.setPointSize(16)
+        font.setPointSize(15)
         self.Message.setFont(font)
         self.Message.setObjectName("Message")
         self.labelMessage = QtWidgets.QLabel(MessageBoard)
@@ -78,14 +92,17 @@ class Ui_MessageBoard(object):
     def retranslateUi(self, MessageBoard):
         _translate = QtCore.QCoreApplication.translate
         MessageBoard.setWindowTitle(_translate("MessageBoard", "Form"))
-        self.label.setText(_translate("MessageBoard", "MESSAGE BOARD"))
-        self.SendMessageButton.setText(_translate("MessageBoard", "Send message"))
+        self.label.setText(_translate("MessageBoard", "Received messages"))
         self.labelMessage.setText(_translate("MessageBoard", "Message"))
         self.decryptButton.setText(_translate("MessageBoard", "Decrypt"))
         self.validateButton.setText(_translate("MessageBoard", "Validate"))
         self.privateKeyLabel.setText(_translate("MessageBoard", "Your private key is required"))
         self.validationLabel.setText(_translate("MessageBoard", ""))
-
+        self.NumberLabel.setText(_translate("MessageBoard", "#"))
+        self.SenderLabel.setText(_translate("MessageBoard", "Sender"))
+        self.TimeLabel.setText(_translate("MessageBoard", "Time"))
+        self.MessageTypeLabel.setText(_translate("MessageBoard", "Message type"))
+        
     def showReceivedMessages(self, database, user):
         self.listWidget.clear()
         self.Message.clear()
@@ -97,53 +114,100 @@ class Ui_MessageBoard(object):
         self.receivedMessages = messages
 
         for message in messages:
-            messageType = message[2].lower()
-            if message[2] != 'PLAIN':
-                messageType += "ed"
-            title = "[" + str(startNum) + "] A " + messageType + " message from " + message[0]
+            messageType = message[3].lower()
+            number = "[" + str(startNum) + "]"
+            title = number.ljust(5, ' ') + message[0].ljust(14, ' ') + message[2] + "    " + messageType
             self.listWidget.addItem(title)
             startNum += 1
     
     def showSelectedMessage(self, item):
         self.Message.clear()
         self.validationLabel.setText("")
-        messageInfo = self.receivedMessages[int(item.text()[1]) - 1]
-        if messageInfo[2] == 'PLAIN':
-            self.decryptButton.setEnabled(False)
+        messageList = (item.text()).split(' ')
+
+        date = ''
+        time = ''
+        for message in messageList:
+            if len(message) == 10 and message.startswith("2"):
+                date = message
+            if len(message) == 8 and ":" in message:
+                time = message
+
+        selectedMessage = None
+        for message in self.receivedMessages:
+            if message[2] == date + " " + time:
+                selectedMessage = message
+                break
+
+        if selectedMessage[3] == 'ENCRYPTED_AND_SIGNED':
+            self.decryptButton.setEnabled(True)
             self.privateKeyLabel.setHidden(True)
-            self.validateButton.setEnabled(False)
-            self.showPlainMessage(messageInfo[3])
-        elif messageInfo[2] == 'ENCRYPT':
+            self.validateButton.setEnabled(True)
+        elif selectedMessage[3] == 'ENCRYPTED':
             self.privateKeyLabel.setHidden(False)
             self.decryptButton.setEnabled(True)
             self.validateButton.setEnabled(False)
-        elif messageInfo[2] == 'SIGN':
+        elif selectedMessage[3] == 'SIGNED':
             self.privateKeyLabel.setHidden(True)
             self.decryptButton.setEnabled(False)
             self.validateButton.setEnabled(True)
-            self.showPlainMessage(messageInfo[4])
+            self.showPlainMessage(selectedMessage[5])
 
     def showPlainMessage(self, message):
         self.Message.clear()
         self.Message.insertPlainText(message)
-
-    def showDecryptedMessage(self, decryptMessage):
-        self.Message.clear()
-        self.Message.insertPlainText(decryptMessage)
     
     def uploadPrivateKey(self, database):
         file_name = QFileDialog.getOpenFileName()
         path = file_name[0]
-        messageInfo = self.receivedMessages[int(self.listWidget.currentItem().text()[1]) - 1]
-        decryptMessage = decrypt_message(path, messageInfo[3])
-        self.showDecryptedMessage(decryptMessage)
+
+        messageList = (self.listWidget.currentItem().text()).split(' ')
+
+        date = ''
+        time = ''
+        for message in messageList:
+            if len(message) == 10 and message.startswith("2"):
+                date = message
+            if len(message) == 8 and ":" in message:
+                time = message
+
+        selectedMessage = None
+        for message in self.receivedMessages:
+            if message[2] == date + " " + time:
+                selectedMessage = message
+                break
+
+        decryptMessage = ''
+        decryptMessage = decrypt_message(path, selectedMessage[5])
+        self.showPlainMessage(decryptMessage)
     
     def getSignedMessage(self):
-        messageInfo = self.receivedMessages[int(self.listWidget.currentItem().text()[1]) - 1]
-        return messageInfo[0], messageInfo[3], messageInfo[4]
+        messageList = (self.listWidget.currentItem().text()).split(' ')
+
+        date = ''
+        time = ''
+        for message in messageList:
+            if len(message) == 10 and message.startswith("2"):
+                date = message
+            if len(message) == 8 and ":" in message:
+                time = message
+
+        selectedMessage = None
+        for message in self.receivedMessages:
+            if message[2] == date + " " + time:
+                selectedMessage = message
+                break
+
+        sender = selectedMessage[0]
+        messageType = selectedMessage[3]
+        ogMessage = selectedMessage[4]
+        encryptedMessage = selectedMessage[5]
+        signedMessage = selectedMessage[6]
+        signedEncryptedMessage = selectedMessage[7]
+        return sender, messageType, ogMessage, encryptedMessage, signedMessage, signedEncryptedMessage
 
     def showVerificationResult(self, result):
         if result:
             self.validationLabel.setText("True")
         else:
-            self.Message.insertPlainText("False")
+            self.validationLabel.setText("False")
