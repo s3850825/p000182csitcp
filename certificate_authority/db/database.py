@@ -7,7 +7,7 @@ class Database():
         self.conn = sqlite3.connect(self.DATABASE_FILE, isolation_level=None)
         self.c = self.conn.cursor()
         self.executeQuery("CREATE TABLE IF NOT EXISTS student (id integer PRIMARY KEY AUTOINCREMENT, username text, password text, walletPassword text, publicKey blob, privateKey blob)")
-        self.executeQuery("CREATE TABLE IF NOT EXISTS message (sender text, receiver text, type text, message blob, og_message text)")
+        self.executeQuery("CREATE TABLE IF NOT EXISTS message (sender text, receiver text, time text, type text, message text, encrypted_message blob, signed_message blob, signed_encrypted_message blob)")
 
     def database(self):
         # connect to DB
@@ -76,9 +76,9 @@ class Database():
             studentList.append(student[0])
         return studentList
 
-    def insertMessage(self, sender, receiver, message, og_message, messageType):
-        query = "INSERT INTO message VALUES('" + sender + "', '" + receiver + "', '" + messageType + "', ?, ?)"
-        self.c.execute(query, (message, og_message,))
+    def insertMessage(self, sender, receiver, time, messagetType, message, encrypted_message, signed_messagemessage, signed_encrypted_message):
+        query = "INSERT INTO message VALUES('" + sender + "', '" + receiver + "', '" + time + "', '" + messagetType + "', ?, ?, ?, ?)"
+        self.c.execute(query, (message, encrypted_message, signed_messagemessage, signed_encrypted_message))
 
     def getReceivedMessages(self, username):
         query = "SELECT * FROM message WHERE receiver=:username"

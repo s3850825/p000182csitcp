@@ -58,6 +58,18 @@ def sign_message(database, privKey, message):
 
     return signature
 
+def sign_encrypted_message(database, privKey, encryptedMessage):
+    # hash the message
+    digest = SHA256.new()
+    digest.update(encryptedMessage)
+    
+    # sign the message by using sender's private key
+    signer = PK.new(RSA.importKey(privKey))
+    signature = signer.sign(digest)
+    print("[ A message is signed ]")
+
+    return signature
+
 def verify_message(database, sender, signedMessage, og_message):
     walletPassword = database.getStudentWalletPassword(sender)
     print("[ Retrieve", sender, "'s public key from Blockchain ]")
@@ -71,6 +83,25 @@ def verify_message(database, sender, signedMessage, og_message):
     try:
         # verify the signed message
         verifier.verify(hash, signedMessage)
+        print("[ Signature is valid. ]")
+        return True
+    except:
+        print("[ Signature is Invalid. ]")
+        return False
+
+def verify_encryptedMessage(database, sender, signedEncryptedMessage, encryptedMessage):
+    walletPassword = database.getStudentWalletPassword(sender)
+    print("[ Retrieve", sender, "'s public key from Blockchain ]")
+    
+    # get receiver's public key from Blockchain
+    pubKey = get_public_key(walletPassword, database)
+
+    # verify the signed message by using sender's public key
+    verifier = PKCS115_SigScheme(RSA.importKey(pubKey))
+    hash = SHA256.new(encryptedMessage)
+    try:
+        # verify the signed message
+        verifier.verify(hash, signedEncryptedMessage)
         print("[ Signature is valid. ]")
         return True
     except:

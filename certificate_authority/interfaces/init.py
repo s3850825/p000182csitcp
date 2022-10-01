@@ -12,6 +12,7 @@ from scripts.crypto import *
 from scripts.deploy import *
 from db.database import *
 from scripts.keyGeneration import *
+import datetime
 
 def frontend_UI():
     app = QApplication([])
@@ -54,12 +55,18 @@ def frontend_UI():
             widget_message.show()
         }
     )
+    # Log out button event
+    ui_mainPage.LogOutButton.clicked.connect(
+        lambda: {
+            ui_mainPage.logout(user, widget_MainPage, widget_login)
+        }
+    )    
     # Download key pairs button event
     ui_mainPage.DownloadKeyButton.clicked.connect(
         lambda: {
             ui_mainPage.downloadKeyPairs(database, user)
         }
-    )    
+    ) 
     # Register button event
     ui.LinkBtnRegister.clicked.connect(
         lambda: {
@@ -79,15 +86,15 @@ def frontend_UI():
         }
     )
     # Send a message button event
-    ui_message.SendMessageButton.clicked.connect(
+    ui_mainPage.SendMessageButton.clicked.connect(
         lambda: {
             sendMessage(database, user, ui_send_message, widget_send_message)
         }
     )
-    # Plain text button event
-    ui_send_message.PlainButton.clicked.connect(
+    # Encrypt and Sign text button event
+    ui_send_message.EncryptAndSignButton.clicked.connect(
         lambda: {
-            checkPlainMessage(database, ui_send_message, widget_send_message)
+            checkEncryptAndSignMessage(database, ui_send_message, widget_send_message)
         }
     )
     # Encrypt text button event
@@ -165,15 +172,29 @@ def sendMessage(database, user, ui_send_message, widget_send_message):
     ui_send_message.showReceiverStudents(user, database)
     widget_send_message.show()
 
-def checkPlainMessage(database, ui_send_message, widget_send_message):
+def checkEncryptAndSignMessage(database, ui_send_message, widget_send_message):
     # take what student has typed
-    sender, receiver, message = ui_send_message.getUserInputForPlainText()
+    sender, receiver, og_message = ui_send_message.getUserInputForPlainText()
     # only send a message when the message is not null 
-    if message != "":
-        # save the message into DB as plain text
-        database.insertMessage(sender, receiver, message, None, "PLAIN")
-        widget_send_message.close()
-        ui_send_message.clear()
+    if og_message != "":
+        # encrypt message
+        encryptedMessage = encrypt_message(database, receiver, og_message)
+
+        # take student's private key and message
+        privKey, _ = ui_send_message.getSenderPrivateKeyAndMessage()
+        if privKey != None:
+            # sign message
+            signedEncryptedMessage = sign_encrypted_message(database, privKey, encryptedMessage)
+            # signedMessage = sign_message(database, privKey, encryptedMessage)
+
+            # check current time
+            x = datetime.datetime.now()
+            time = str(x.year)+"-"+str(x.month).rjust(2, '0')+"-"+str(x.day).rjust(2, '0')+" "+ str(x.hour).rjust(2, '0')+":"+str(x.minute).rjust(2, '0')+":"+str(x.second).rjust(2, '0')
+            
+            # save the message into DB as plain text
+            database.insertMessage(sender, receiver, time, "ENCRYPTED_AND_SIGNED", None, encryptedMessage, None, signedEncryptedMessage)
+            widget_send_message.close()
+            ui_send_message.clear()
     else:
         print("[ Message must not be null ]")
         
@@ -184,8 +205,13 @@ def checkEncryptMessage(database, ui_send_message, widget_send_message):
     if message != "":
         # encrypt message
         encryptedMessage = encrypt_message(database, receiver, message)
+
+        # check current time
+        x = datetime.datetime.now()
+        time = str(x.year)+"-"+str(x.month).rjust(2, '0')+"-"+str(x.day).rjust(2, '0')+" "+ str(x.hour).rjust(2, '0')+":"+str(x.minute).rjust(2, '0')+":"+str(x.second).rjust(2, '0')
+        
         # save the message into DB as encrypted text
-        database.insertMessage(sender, receiver, encryptedMessage, None, "ENCRYPT")
+        database.insertMessage(sender, receiver, time, "ENCRYPTED", None, encryptedMessage, None, None)
         widget_send_message.close()
         ui_send_message.clear()
     else:
@@ -200,15 +226,23 @@ def getSenderPrivateKey(database, ui_send_message, widget_send_message):
     if privKey != None:
         # sign message
         signedMessage = sign_message(database, privKey, message)
+        
+        # check current time
+        x = datetime.datetime.now()
+        time = str(x.year)+"-"+str(x.month).rjust(2, '0')+"-"+str(x.day).rjust(2, '0')+" "+ str(x.hour).rjust(2, '0')+":"+str(x.minute).rjust(2, '0')+":"+str(x.second).rjust(2, '0')
+        
         # save the message into DB as signed text
-        database.insertMessage(sender, receiver, signedMessage, message, "SIGN")
+        database.insertMessage(sender, receiver, time, "SIGNED", message, None, signedMessage, None)
         widget_send_message.close()
         ui_send_message.clear()
 
 def validateSignedMessage(database, ui_message):
     # take what student has typed
-    sender, signedMessage, og_message = ui_message.getSignedMessage()
-    # verify the signed message and take the result
-    result = verify_message(database, sender, signedMessage, og_message)
+    sender, messageType, ogMessage, encryptedMessage, signedMessage, signedEncryptedMessage = ui_message.getSignedMessage()
+    if messageType == "ENCRYPTED_AND_SIGNED":
+        result = verify_encryptedMessage(database, sender, signedEncryptedMessage, encryptedMessage)
+    else:
+        # verify the signed message and take the result
+        result = verify_message(database, sender, signedMessage, ogMessage)
     # show the vefirication result
     ui_message.showVerificationResult(result)
