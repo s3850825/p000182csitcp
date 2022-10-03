@@ -24,7 +24,7 @@ class Ui_Login(object):
         self.label.setFont(font)
         self.label.setObjectName("label")
         self.label_2 = QtWidgets.QLabel(Login)
-        self.label_2.setGeometry(QtCore.QRect(60, 110, 111, 31))
+        self.label_2.setGeometry(QtCore.QRect(60, 110, 131, 31))
         font.setPointSize(14)
         self.label_2.setFont(font)
         self.label_2.setObjectName("label_2")

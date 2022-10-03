@@ -68,17 +68,21 @@ class Ui_MessageBoard(object):
         self.labelMessage.setFont(font)
         self.labelMessage.setObjectName("labelMessage")
         self.decryptButton = QtWidgets.QPushButton(MessageBoard)
-        self.decryptButton.setGeometry(QtCore.QRect(180, 480, 171, 51))
+        self.decryptButton.setGeometry(QtCore.QRect(180, 520, 171, 51))
         self.decryptButton.setFont(font)
         self.decryptButton.setObjectName("decryptButton")
         self.validateButton = QtWidgets.QPushButton(MessageBoard)
-        self.validateButton.setGeometry(QtCore.QRect(500, 480, 171, 51))
+        self.validateButton.setGeometry(QtCore.QRect(500, 520, 171, 51))
         self.validateButton.setFont(font)
         self.validateButton.setObjectName("validateButton")
         self.privateKeyLabel = QtWidgets.QLabel(MessageBoard)
-        self.privateKeyLabel.setGeometry(QtCore.QRect(115, 390, 330, 61))
+        self.privateKeyLabel.setGeometry(QtCore.QRect(55, 370, 400, 61))
         self.privateKeyLabel.setFont(font)
         self.privateKeyLabel.setObjectName("privateKeyLabel")
+        self.privateKeyPath = QtWidgets.QPlainTextEdit(MessageBoard)
+        self.privateKeyPath.setGeometry(QtCore.QRect(55, 430, 400, 60))
+        self.privateKeyPath.setFont(font)
+        self.privateKeyPath.setObjectName("privateKeyPath")
         self.validationLabel = QtWidgets.QLabel(MessageBoard)
         self.validationLabel.setGeometry(QtCore.QRect(570, 390, 200, 61))
         self.validationLabel.setFont(font)
@@ -96,7 +100,7 @@ class Ui_MessageBoard(object):
         self.labelMessage.setText(_translate("MessageBoard", "Message"))
         self.decryptButton.setText(_translate("MessageBoard", "Decrypt"))
         self.validateButton.setText(_translate("MessageBoard", "Validate"))
-        self.privateKeyLabel.setText(_translate("MessageBoard", "Your private key is required"))
+        self.privateKeyLabel.setText(_translate("MessageBoard", "Type Your private key path for decryption"))
         self.validationLabel.setText(_translate("MessageBoard", ""))
         self.NumberLabel.setText(_translate("MessageBoard", "#"))
         self.SenderLabel.setText(_translate("MessageBoard", "Sender"))
@@ -123,6 +127,7 @@ class Ui_MessageBoard(object):
     def showSelectedMessage(self, item):
         self.Message.clear()
         self.validationLabel.setText("")
+        self.privateKeyPath.setEnabled(False)
         messageList = (item.text()).split(' ')
 
         date = ''
@@ -143,24 +148,26 @@ class Ui_MessageBoard(object):
             self.decryptButton.setEnabled(True)
             self.privateKeyLabel.setHidden(True)
             self.validateButton.setEnabled(True)
+            self.privateKeyPath.setEnabled(True)
         elif selectedMessage[3] == 'ENCRYPTED':
             self.privateKeyLabel.setHidden(False)
             self.decryptButton.setEnabled(True)
             self.validateButton.setEnabled(False)
+            self.privateKeyPath.setEnabled(True)
         elif selectedMessage[3] == 'SIGNED':
             self.privateKeyLabel.setHidden(True)
             self.decryptButton.setEnabled(False)
             self.validateButton.setEnabled(True)
-            self.showPlainMessage(selectedMessage[5])
+            self.showPlainMessage(selectedMessage[4])
 
     def showPlainMessage(self, message):
         self.Message.clear()
         self.Message.insertPlainText(message)
     
     def uploadPrivateKey(self, database):
-        file_name = QFileDialog.getOpenFileName()
-        path = file_name[0]
-
+        # file_name = QFileDialog.getOpenFileName()
+        path = self.privateKeyPath.toPlainText()
+        print(path)
         messageList = (self.listWidget.currentItem().text()).split(' ')
 
         date = ''
