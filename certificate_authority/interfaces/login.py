@@ -65,7 +65,7 @@ class Ui_Login(object):
 
     def retranslateUi(self, Login):
         _translate = QtCore.QCoreApplication.translate
-        Login.setWindowTitle(_translate("Login", "Form"))
+        Login.setWindowTitle(_translate("Login", "Login page"))
         self.label.setText(_translate("Login", "Login"))
         self.label_2.setText(_translate("Login", "Student Name"))
         self.label_3.setText(_translate("Login", "Password"))
