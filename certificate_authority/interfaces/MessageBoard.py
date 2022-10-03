@@ -9,7 +9,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QDir
+from PyQt5.QtCore import QDir, QTimer
 from PyQt5.QtWidgets import QApplication, QInputDialog, QFileDialog
 from scripts.crypto import *
 
@@ -109,6 +109,9 @@ class Ui_MessageBoard(object):
         self.MessageTypeLabel.setText(_translate("MessageBoard", "Message type"))
         
     def showReceivedMessages(self, database, user):
+        self.database = database
+        self.user = user
+        self.refreshTimer()
         self.listWidget.clear()
         self.Message.clear()
         self.privateKeyLabel.setHidden(True)
@@ -221,3 +224,15 @@ class Ui_MessageBoard(object):
             self.validationLabel.setText("True")
         else:
             self.validationLabel.setText("False")
+
+    def refreshTimer(self):
+        # Repeating timer, calls random_pick over and over.
+        self.picktimer = QTimer()
+        self.picktimer.setInterval(500)
+        self.picktimer.timeout.connect(self.updateMessages)
+        self.picktimer.start()
+
+    def updateMessages(self):
+        messages = self.database.getReceivedMessages(self.user.getStudentName())
+        if len(messages) != len(self.receivedMessages):
+            self.showReceivedMessages(self.database, self.user)
