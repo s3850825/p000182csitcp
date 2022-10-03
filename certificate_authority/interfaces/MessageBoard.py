@@ -79,6 +79,7 @@ class Ui_MessageBoard(object):
         self.privateKeyLabel.setGeometry(QtCore.QRect(55, 370, 400, 61))
         self.privateKeyLabel.setFont(font)
         self.privateKeyLabel.setObjectName("privateKeyLabel")
+        self.privateKeyLabel.setStyleSheet("color: rgb(0, 0, 255);")
         self.privateKeyPath = QtWidgets.QPlainTextEdit(MessageBoard)
         self.privateKeyPath.setGeometry(QtCore.QRect(55, 430, 400, 60))
         self.privateKeyPath.setFont(font)
@@ -113,6 +114,7 @@ class Ui_MessageBoard(object):
         self.privateKeyLabel.setHidden(True)
         self.decryptButton.setEnabled(False)
         self.validateButton.setEnabled(False)
+        self.privateKeyPath.setDisabled(True)
         messages = database.getReceivedMessages(user.getStudentName())
         startNum = 1
         self.receivedMessages = messages
@@ -127,7 +129,7 @@ class Ui_MessageBoard(object):
     def showSelectedMessage(self, item):
         self.Message.clear()
         self.validationLabel.setText("")
-        self.privateKeyPath.setEnabled(False)
+        self.privateKeyPath.setDisabled(True)
         messageList = (item.text()).split(' ')
 
         date = ''
@@ -148,16 +150,17 @@ class Ui_MessageBoard(object):
             self.decryptButton.setEnabled(True)
             self.privateKeyLabel.setHidden(True)
             self.validateButton.setEnabled(True)
-            self.privateKeyPath.setEnabled(True)
+            self.privateKeyPath.setDisabled(False)
         elif selectedMessage[3] == 'ENCRYPTED':
             self.privateKeyLabel.setHidden(False)
             self.decryptButton.setEnabled(True)
             self.validateButton.setEnabled(False)
-            self.privateKeyPath.setEnabled(True)
+            self.privateKeyPath.setDisabled(False)
         elif selectedMessage[3] == 'SIGNED':
             self.privateKeyLabel.setHidden(True)
             self.decryptButton.setEnabled(False)
             self.validateButton.setEnabled(True)
+            self.privateKeyPath.setDisabled(True)
             self.showPlainMessage(selectedMessage[4])
 
     def showPlainMessage(self, message):
