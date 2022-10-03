@@ -91,7 +91,7 @@ class Ui_MessageBoard(object):
 
     def retranslateUi(self, MessageBoard):
         _translate = QtCore.QCoreApplication.translate
-        MessageBoard.setWindowTitle(_translate("MessageBoard", "Form"))
+        MessageBoard.setWindowTitle(_translate("MessageBoard", "Message board page"))
         self.label.setText(_translate("MessageBoard", "Received messages"))
         self.labelMessage.setText(_translate("MessageBoard", "Message"))
         self.decryptButton.setText(_translate("MessageBoard", "Decrypt"))

@@ -51,7 +51,7 @@ class Ui_MainPage(object):
 
     def retranslateUi(self, MainPage):
         _translate = QtCore.QCoreApplication.translate
-        MainPage.setWindowTitle(_translate("MainPage", "Form"))
+        MainPage.setWindowTitle(_translate("MainPage", "Main page"))
         self.WelcomeMessage.setText(_translate("MainPage", "Welcome"))
         self.StudentName.setText(_translate("MainPage", "Name"))
         self.LinkBtnMessageBoard.setText(_translate("MainPage", "Check messages"))

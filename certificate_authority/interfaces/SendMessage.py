@@ -69,7 +69,7 @@ class Ui_Send_Message(object):
 
     def retranslateUi(self, SendMessage):
         _translate = QtCore.QCoreApplication.translate
-        SendMessage.setWindowTitle(_translate("SendMessage", "SendMessage"))
+        SendMessage.setWindowTitle(_translate("SendMessage", "Send a message page"))
         self.EncryptAndSignButton.setText(_translate("SendMessage", "Encrypt, Sign and Send"))
         self.SendAMessage.setText(_translate("SendMessage", "Send a message"))
         self.EncryptButton.setText(_translate("SendMessage", "Encrypt and Send"))
