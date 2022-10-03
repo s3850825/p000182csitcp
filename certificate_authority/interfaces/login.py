@@ -67,7 +67,7 @@ class Ui_Login(object):
         _translate = QtCore.QCoreApplication.translate
         Login.setWindowTitle(_translate("Login", "Form"))
         self.label.setText(_translate("Login", "Login"))
-        self.label_2.setText(_translate("Login", "Student ID"))
+        self.label_2.setText(_translate("Login", "Student Name"))
         self.label_3.setText(_translate("Login", "Password"))
         self.LoginButton.setText(_translate("Login", "Login"))
         self.label_4.setText(_translate("Login", "Don\'t have an account? "))
