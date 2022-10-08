@@ -1,6 +1,3 @@
-/certificate_authority/.env
-/certificate_authority/scripts/__pycache__
-/certificate_authority/build/contracts/*
-/certificate_authority/build/deployments/*
-/certificate_authority/build/contracts/RSACertification.json
-/certificate_authority/build/deployments/map.json
+version https://git-lfs.github.com/spec/v1
+oid sha256:12e43d36da4c70dcd62c21b9ceadcf96527b8f62b898146a88bace1db4216268
+size 265
