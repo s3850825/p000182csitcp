@@ -150,6 +150,18 @@ def frontend_UI():
             sendFile(database, user, ui_send_file, widget_send_file)
         }
     )
+    # Encrypt file button event
+    ui_send_file.EncryptButton.clicked.connect(
+        lambda: {
+            checkEncryptFile(database, ui_send_file, widget_send_file)
+        }
+    )
+    # Decrypt file button event
+    ui_file.decryptButton.clicked.connect(
+        lambda: {
+            ui_file.uploadPrivateKey(database)
+        }
+    )
 
     sys.exit(app.exec_())
 
@@ -282,3 +294,21 @@ def sendFile(database, user, ui_send_file, widget_send_file):
     # show all the messages that current student got
     ui_send_file.showReceiverStudents(user, database)
     widget_send_file.show()
+
+def checkEncryptFile(database, ui_send_file, widget_send_file):
+    # take what student has typed
+    sender, receiver, filepath = ui_send_file.getUserInputForPlainText()
+    filepathArray = filepath.split("/")
+    filename = filepathArray[-1]
+
+    # encrypt file
+    encryptedFile = encrypt_file(database, receiver, filepath)
+
+    # check current time
+    x = datetime.datetime.now()
+    time = str(x.year)+"-"+str(x.month).rjust(2, '0')+"-"+str(x.day).rjust(2, '0')+" "+ str(x.hour).rjust(2, '0')+":"+str(x.minute).rjust(2, '0')+":"+str(x.second).rjust(2, '0')
+    
+    # save the file into DB as encrypted file
+    database.insertFile(sender, receiver, time, "ENCRYPTED", None, encryptedFile, None, None, filename)
+    widget_send_file.close()
+    ui_send_file.clear()

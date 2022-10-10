@@ -73,11 +73,21 @@ class DatabaseOracle():
         query = "INSERT INTO message (sender, receiver, time, messagetype, message, encrypted_message, signed_message, signed_encrypted_message) VALUES (:1, :2, :3, :4, :5, :6, :7, :8)"
         self.cursor.execute(query, (sender, receiver, time, messageType, message, encrypted_message, signed_message, signed_encrypted_message))
 
+    def insertFile(self, sender, receiver, time, fileType, file, encrypted_file, signed_file, signed_encrypted_file, fileName):
+        query = "INSERT INTO files (sender, receiver, time, fileType, files, encrypted_file, signed_file, signed_encrypted_file, fileName) VALUES (:1, :2, :3, :4, :5, :6, :7, :8, :9)"
+        self.cursor.execute(query, (sender, receiver, time, fileType, file, encrypted_file, signed_file, signed_encrypted_file, fileName))
+
     def getReceivedMessages(self, username):
         query = "SELECT * FROM message WHERE receiver=:1"
         self.cursor.execute(query, (username,))
         allMessages = self.cursor.fetchall()
         return allMessages
+
+    def getReceivedFiles(self, username):
+        query = "SELECT * FROM files WHERE receiver=:1"
+        self.cursor.execute(query, (username,))
+        allFiles = self.cursor.fetchall()
+        return allFiles
     
     def getUserIndexUsingWalletPassword(self, walletPassword):
         query = "SELECT id FROM student WHERE walletPassword=:1"

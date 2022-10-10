@@ -12,6 +12,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QDir, QTimer
 from PyQt5.QtWidgets import QApplication, QInputDialog, QFileDialog
 from scripts.crypto import *
+import os
 
 class Ui_FileBoard(object):
     def setupUi(self, FileBoard):
@@ -82,7 +83,7 @@ class Ui_FileBoard(object):
         self.validationLabel.setObjectName("validationLabel")
         
         self.listWidget.itemDoubleClicked.connect(self.showSelectedFile)
-        self.receivedMessages = []
+        self.receivedFiles = []
         self.retranslateUi(FileBoard)
         QtCore.QMetaObject.connectSlotsByName(FileBoard)
 
@@ -108,47 +109,47 @@ class Ui_FileBoard(object):
         self.decryptButton.setEnabled(False)
         self.validateButton.setEnabled(False)
         self.privateKeyPath.setDisabled(True)
-        messages = database.getReceivedMessages(user.getStudentName())
+        files = database.getReceivedFiles(user.getStudentName())
         startNum = 1
-        self.receivedMessages = messages
+        self.receivedFiles = files
 
-        for message in messages:
-            messageType = message[3].lower()
+        for aFile in files:
+            fileType = aFile[3].lower()
             number = "[" + str(startNum) + "]"
-            title = number.ljust(5, ' ') + message[0].ljust(14, ' ') + message[2] + "    " + messageType
+            title = number.ljust(5, ' ') + aFile[0].ljust(14, ' ') + aFile[2] + "    " + fileType
             self.listWidget.addItem(title)
             startNum += 1
     
     def showSelectedFile(self, item):
         self.validationLabel.setText("")
         self.privateKeyPath.setDisabled(True)
-        messageList = (item.text()).split(' ')
+        fileList = (item.text()).split(' ')
 
         date = ''
         time = ''
-        for message in messageList:
-            if len(message) == 10 and message.startswith("2"):
-                date = message
-            if len(message) == 8 and ":" in message:
-                time = message
+        for aFile in fileList:
+            if len(aFile) == 10 and aFile.startswith("2"):
+                date = aFile
+            if len(aFile) == 8 and ":" in aFile:
+                time = aFile
 
-        selectedMessage = None
-        for message in self.receivedMessages:
-            if message[2] == date + " " + time:
-                selectedMessage = message
+        selectedaFile = None
+        for aFile in self.receivedFiles:
+            if aFile[2] == date + " " + time:
+                selectedaFile = aFile
                 break
 
-        if selectedMessage[3] == 'ENCRYPTED_AND_SIGNED':
+        if selectedaFile[3] == 'ENCRYPTED_AND_SIGNED':
             self.decryptButton.setEnabled(True)
             self.privateKeyLabel.setHidden(False)
             self.validateButton.setEnabled(True)
             self.privateKeyPath.setDisabled(False)
-        elif selectedMessage[3] == 'ENCRYPTED':
+        elif selectedaFile[3] == 'ENCRYPTED':
             self.privateKeyLabel.setHidden(False)
             self.decryptButton.setEnabled(True)
             self.validateButton.setEnabled(False)
             self.privateKeyPath.setDisabled(False)
-        elif selectedMessage[3] == 'SIGNED':
+        elif selectedaFile[3] == 'SIGNED':
             self.privateKeyLabel.setHidden(True)
             self.decryptButton.setEnabled(False)
             self.validateButton.setEnabled(True)
@@ -156,54 +157,50 @@ class Ui_FileBoard(object):
             self.showPlainMessage(selectedMessage[4])
     
     def uploadPrivateKey(self, database):
-        # file_name = QFileDialog.getOpenFileName()
         path = self.privateKeyPath.toPlainText()
-        print(path)
-        messageList = (self.listWidget.currentItem().text()).split(' ')
+
+        fileList = (self.listWidget.currentItem().text()).split(' ')
 
         date = ''
         time = ''
-        for message in messageList:
-            if len(message) == 10 and message.startswith("2"):
-                date = message
-            if len(message) == 8 and ":" in message:
-                time = message
+        for aFile in fileList:
+            if len(aFile) == 10 and aFile.startswith("2"):
+                date = aFile
+            if len(aFile) == 8 and ":" in aFile:
+                time = aFile
 
-        selectedMessage = None
-        for message in self.receivedMessages:
-            if message[2] == date + " " + time:
-                selectedMessage = message
+        selectedFile = None
+        for aFile in self.receivedFiles:
+            if aFile[2] == date + " " + time:
+                selectedFile = aFile
                 break
-
-        decryptMessage = ''
-        decryptMessage = decrypt_message(path, selectedMessage[5])
-        # let user download decrypted file
-        # self.showPlainMessage(decryptMessage)
+                
+        decrypt_file(path, selectedFile[5], selectedFile[8])
     
     def getSignedMessage(self):
-        messageList = (self.listWidget.currentItem().text()).split(' ')
+        fileList = (self.listWidget.currentItem().text()).split(' ')
 
         date = ''
         time = ''
-        for message in messageList:
-            if len(message) == 10 and message.startswith("2"):
-                date = message
-            if len(message) == 8 and ":" in message:
-                time = message
+        for aFile in fileList:
+            if len(aFile) == 10 and aFile.startswith("2"):
+                date = aFile
+            if len(aFile) == 8 and ":" in aFile:
+                time = aFile
 
-        selectedMessage = None
-        for message in self.receivedMessages:
-            if message[2] == date + " " + time:
-                selectedMessage = message
+        selectedFile = None
+        for aFile in self.receivedFiles:
+            if aFile[2] == date + " " + time:
+                selectedFile = aFile
                 break
 
-        sender = selectedMessage[0]
-        messageType = selectedMessage[3]
-        ogMessage = selectedMessage[4]
-        encryptedMessage = selectedMessage[5]
-        signedMessage = selectedMessage[6]
-        signedEncryptedMessage = selectedMessage[7]
-        return sender, messageType, ogMessage, encryptedMessage, signedMessage, signedEncryptedMessage
+        sender = selectedFile[0]
+        fileType = selectedFile[3]
+        ogFile = selectedFile[4]
+        encryptedFile = selectedFile[5]
+        signedFile = selectedFile[6]
+        signedEncryptedFile = selectedFile[7]
+        return sender, fileType, ogFile, encryptedFile, signedFile, signedEncryptedFile
 
     def showVerificationResult(self, result):
         if result:
@@ -219,8 +216,8 @@ class Ui_FileBoard(object):
         self.picktimer.start()
 
     def updateMessages(self):
-        messages = self.database.getReceivedMessages(self.user.getStudentName())
-        if len(messages) != len(self.receivedMessages):
+        files = self.database.getReceivedFiles(self.user.getStudentName())
+        if len(files) != len(self.receivedFiles):
             self.showReceivedFiles(self.database, self.user)
 
     def privateKeyPathclear(self):

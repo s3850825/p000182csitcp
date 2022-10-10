@@ -155,6 +155,6 @@ class Ui_Send_File(object):
     def chooseAFile(self):
         file_name = QFileDialog.getOpenFileName()
         if file_name[0] != '':
-            print(os.path.splitext(file_name[0])[1])
+            # print(os.path.splitext(file_name[0])[1])
             self.filePathLabel.setText(file_name[0])
         
