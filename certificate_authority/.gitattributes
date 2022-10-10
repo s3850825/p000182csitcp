@@ -1,3 +1,2 @@
 *.sol linguist-language=Solidity
 *.vy linguist-language=Python
-*.dll filter=lfs diff=lfs merge=lfs -text

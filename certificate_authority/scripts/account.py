@@ -1,3 +1,10 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:d88fcfa219b5131adca3ecf7207f683cd9aa284661764e55af191967427ce8fe
-size 330
+from brownie import accounts, config, RSACertification, network
+
+
+def get_account(walletPassword):
+    if network.show_active() == "development":
+        # account provided by Ganache-cli
+        return accounts[0]
+    else:
+        # return accounts.add(config["wallets"]["from_key"])
+        return accounts.add(walletPassword)

@@ -1,3 +1,3 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:6a4cf9971d2f99c3618d47dfa4ffcf01f576913a81de52c6187d4be162bd3289
-size 50
+dotenv: .env
+wallets:
+  from_key: ${PRIVATE_KEY_1}

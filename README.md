@@ -1,3 +1,17 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:8059a965761599873d86e2ed1629ed0f51b49980872278ef521fe2ccadf113b6
-size 380
+# RMIT SEPT 2021 Major Project
+
+# P000182csitcp
+
+# IK-182-Blockchain-1
+
+## Members
+* Jingxuan Long (s3860956) 
+* Yang Feng (s3860864)
+* Yingying Guo (s3860867)
+* Shaohui Wang (s3860973)
+* You chan Lee (s3850825)
+
+## Records
+
+* Github repository: https://github.com/s3850825/p000182csitcp.git
+* jira Board: https://p000182csitcp.atlassian.net/jira/software/projects/BBCACS/boards/1
