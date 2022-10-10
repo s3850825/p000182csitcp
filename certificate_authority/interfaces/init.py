@@ -60,7 +60,9 @@ def frontend_UI():
     # Log out button event
     ui_mainPage.LogOutButton.clicked.connect(
         lambda: {
-            ui_mainPage.logout(user, widget_MainPage, widget_login)
+            ui_mainPage.logout(user, widget_MainPage, widget_login),
+            ui_send_message.privateKeyPathclear(),
+            ui_message.privateKeyPathclear()
         }
     )    
     # Download key pairs button event

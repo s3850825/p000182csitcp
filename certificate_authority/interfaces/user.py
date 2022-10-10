@@ -4,6 +4,7 @@ class User():
         self.walletPassword = database.getStudentWalletPassword(self.username)
         self.publicKey = database.getStudentPublicKey(self.username)
         self.privateKey = database.getStudentPrivateKey(self.username)
+        self.privateKeyPath = None
     
     def getStudentName(self):
         return self.username

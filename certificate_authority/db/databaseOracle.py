@@ -6,6 +6,7 @@ class DatabaseOracle():
         path = os.getcwd() + "\db\instantclient-basic-windows.x64-21.6.0.0.0dbru\instantclient_21_6"
         cx_Oracle.init_oracle_client(lib_dir=path) 
         self.connection = cx_Oracle.connect(user='admin', password='P000182csitcp!', dsn='p000182csitcp_high')
+        self.connection.autocommit = True
         self.cursor = self.connection.cursor()
         self.connection.outputtypehandler = output_type_handler
 

@@ -236,3 +236,6 @@ class Ui_MessageBoard(object):
         messages = self.database.getReceivedMessages(self.user.getStudentName())
         if len(messages) != len(self.receivedMessages):
             self.showReceivedMessages(self.database, self.user)
+
+    def privateKeyPathclear(self):
+        self.privateKeyPath.clear()

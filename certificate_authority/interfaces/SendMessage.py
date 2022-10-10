@@ -64,7 +64,7 @@ class Ui_Send_Message(object):
         self.comboBoxReceiver.setFont(font)
         self.comboBoxReceiver.setObjectName("comboBoxReceiver")
         self.privateKeyLabel = QtWidgets.QLabel(SendMessage)
-        self.privateKeyLabel.setGeometry(QtCore.QRect(160, 370, 400, 61))
+        self.privateKeyLabel.setGeometry(QtCore.QRect(120, 370, 440, 61))
         self.privateKeyLabel.setFont(font)
         self.privateKeyLabel.setObjectName("privateKeyLabel")
         self.privateKeyLabel.setStyleSheet("color: rgb(0, 0, 255);")
@@ -138,4 +138,7 @@ class Ui_Send_Message(object):
                         }
             '''
         return css
+
+    def privateKeyPathclear(self):
+        self.privateKeyPath.clear()
         
