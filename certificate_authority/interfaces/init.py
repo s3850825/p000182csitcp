@@ -9,6 +9,7 @@ from interfaces.KeyPairs import *
 from interfaces.user import *
 from interfaces.SendMessage import *
 from interfaces.FileBoard import *
+from interfaces.SendFile import *
 from scripts.crypto import *
 from scripts.deploy import *
 from db.database import *
@@ -48,6 +49,11 @@ def frontend_UI():
     widget_file = QWidget()
     ui_file = Ui_FileBoard()
     ui_file.setupUi(widget_file)
+
+    # Send a file page widget
+    widget_send_file = QWidget()
+    ui_send_file = Ui_Send_File()
+    ui_send_file.setupUi(widget_send_file)
 
     # connect to DB
     # database = Database()
@@ -136,6 +142,12 @@ def frontend_UI():
         lambda: {
             ui_file.showReceivedFiles(database, user),
             widget_file.show()
+        }
+    )
+    # Send a file button event
+    ui_mainPage.SendFileButton.clicked.connect(
+        lambda: {
+            sendFile(database, user, ui_send_file, widget_send_file)
         }
     )
 
@@ -263,3 +275,10 @@ def validateSignedMessage(database, ui_message):
         result = verify_message(database, sender, signedMessage, ogMessage)
     # show the vefirication result
     ui_message.showVerificationResult(result)
+
+def sendFile(database, user, ui_send_file, widget_send_file):
+    # show sender's name
+    ui_send_file.showStudentName(user)
+    # show all the messages that current student got
+    ui_send_file.showReceiverStudents(user, database)
+    widget_send_file.show()
