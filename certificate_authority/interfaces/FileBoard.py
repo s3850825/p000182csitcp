@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'MessageBoard.ui'
+# Form implementation generated from reading ui file 'FileBoard.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.7
 #
@@ -13,21 +13,21 @@ from PyQt5.QtCore import QDir, QTimer
 from PyQt5.QtWidgets import QApplication, QInputDialog, QFileDialog
 from scripts.crypto import *
 
-class Ui_MessageBoard(object):
-    def setupUi(self, MessageBoard):
-        MessageBoard.setObjectName("MessageBoard")
-        MessageBoard.resize(858, 838)
+class Ui_FileBoard(object):
+    def setupUi(self, FileBoard):
+        FileBoard.setObjectName("FileBoard")
+        FileBoard.resize(858, 800)
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(14)
-        MessageBoard.setFont(font)
-        self.label = QtWidgets.QLabel(MessageBoard)
-        self.label.setGeometry(QtCore.QRect(220, 10, 451, 71))
+        FileBoard.setFont(font)
+        self.label = QtWidgets.QLabel(FileBoard)
+        self.label.setGeometry(QtCore.QRect(300, 10, 451, 71))
         font.setPointSize(30)
         self.label.setFont(font)
         self.label.setObjectName("label")
         font.setPointSize(16)
-        self.scrollArea_2 = QtWidgets.QScrollArea(MessageBoard)
+        self.scrollArea_2 = QtWidgets.QScrollArea(FileBoard)
         self.scrollArea_2.setGeometry(QtCore.QRect(20, 80, 811, 291))
         self.scrollArea_2.setWidgetResizable(True)
         self.scrollArea_2.setObjectName("scrollArea_2")
@@ -39,7 +39,7 @@ class Ui_MessageBoard(object):
         self.NumberLabel.setGeometry(QtCore.QRect(56, 20, 64, 15))
         self.NumberLabel.setFont(font)
         self.NumberLabel.setObjectName("NumberLabel")
-        self.SenderLabel = QtWidgets.QLabel(MessageBoard)
+        self.SenderLabel = QtWidgets.QLabel(FileBoard)
         self.SenderLabel.setGeometry(QtCore.QRect(110, 100, 68, 15))
         self.SenderLabel.setFont(font)
         self.SenderLabel.setObjectName("SenderLabel")
@@ -58,62 +58,52 @@ class Ui_MessageBoard(object):
         self.listWidget.setFont(font)
         self.listWidget.setObjectName("listWidget")
         self.scrollArea_2.setWidget(self.scrollAreaWidgetContents_2)
-        self.Message = QtWidgets.QPlainTextEdit(MessageBoard)
-        self.Message.setGeometry(QtCore.QRect(230, 640, 401, 101))
         font.setPointSize(15)
-        self.Message.setFont(font)
-        self.Message.setObjectName("Message")
-        self.labelMessage = QtWidgets.QLabel(MessageBoard)
-        self.labelMessage.setGeometry(QtCore.QRect(380, 580, 111, 51))
-        self.labelMessage.setFont(font)
-        self.labelMessage.setObjectName("labelMessage")
-        self.decryptButton = QtWidgets.QPushButton(MessageBoard)
+        self.decryptButton = QtWidgets.QPushButton(FileBoard)
         self.decryptButton.setGeometry(QtCore.QRect(180, 520, 171, 51))
         self.decryptButton.setFont(font)
         self.decryptButton.setObjectName("decryptButton")
-        self.validateButton = QtWidgets.QPushButton(MessageBoard)
+        self.validateButton = QtWidgets.QPushButton(FileBoard)
         self.validateButton.setGeometry(QtCore.QRect(500, 520, 171, 51))
         self.validateButton.setFont(font)
         self.validateButton.setObjectName("validateButton")
-        self.privateKeyLabel = QtWidgets.QLabel(MessageBoard)
+        self.privateKeyLabel = QtWidgets.QLabel(FileBoard)
         self.privateKeyLabel.setGeometry(QtCore.QRect(55, 370, 400, 61))
         self.privateKeyLabel.setFont(font)
         self.privateKeyLabel.setObjectName("privateKeyLabel")
         self.privateKeyLabel.setStyleSheet("color: rgb(0, 0, 255);")
-        self.privateKeyPath = QtWidgets.QPlainTextEdit(MessageBoard)
+        self.privateKeyPath = QtWidgets.QPlainTextEdit(FileBoard)
         self.privateKeyPath.setGeometry(QtCore.QRect(55, 430, 400, 60))
         self.privateKeyPath.setFont(font)
         self.privateKeyPath.setObjectName("privateKeyPath")
-        self.validationLabel = QtWidgets.QLabel(MessageBoard)
+        self.validationLabel = QtWidgets.QLabel(FileBoard)
         self.validationLabel.setGeometry(QtCore.QRect(570, 390, 200, 61))
         self.validationLabel.setFont(font)
         self.validationLabel.setObjectName("validationLabel")
         
-        self.listWidget.itemDoubleClicked.connect(self.showSelectedMessage)
+        self.listWidget.itemDoubleClicked.connect(self.showSelectedFile)
         self.receivedMessages = []
-        self.retranslateUi(MessageBoard)
-        QtCore.QMetaObject.connectSlotsByName(MessageBoard)
+        self.retranslateUi(FileBoard)
+        QtCore.QMetaObject.connectSlotsByName(FileBoard)
 
-    def retranslateUi(self, MessageBoard):
+    def retranslateUi(self, FileBoard):
         _translate = QtCore.QCoreApplication.translate
-        MessageBoard.setWindowTitle(_translate("MessageBoard", "Message board page"))
-        self.label.setText(_translate("MessageBoard", "Received messages"))
-        self.labelMessage.setText(_translate("MessageBoard", "Message"))
-        self.decryptButton.setText(_translate("MessageBoard", "Decrypt"))
-        self.validateButton.setText(_translate("MessageBoard", "Validate"))
-        self.privateKeyLabel.setText(_translate("MessageBoard", "Type Your private key path for decryption"))
-        self.validationLabel.setText(_translate("MessageBoard", ""))
-        self.NumberLabel.setText(_translate("MessageBoard", "#"))
-        self.SenderLabel.setText(_translate("MessageBoard", "Sender"))
-        self.TimeLabel.setText(_translate("MessageBoard", "Time"))
-        self.MessageTypeLabel.setText(_translate("MessageBoard", "Message type"))
+        FileBoard.setWindowTitle(_translate("FileBoard", "File board page"))
+        self.label.setText(_translate("FileBoard", "Received files"))
+        self.decryptButton.setText(_translate("FileBoard", "Decrypt"))
+        self.validateButton.setText(_translate("FileBoard", "Validate"))
+        self.privateKeyLabel.setText(_translate("FileBoard", "Type Your private key path for decryption"))
+        self.validationLabel.setText(_translate("FileBoard", ""))
+        self.NumberLabel.setText(_translate("FileBoard", "#"))
+        self.SenderLabel.setText(_translate("FileBoard", "Sender"))
+        self.TimeLabel.setText(_translate("FileBoard", "Time"))
+        self.MessageTypeLabel.setText(_translate("FileBoard", "File type"))
         
-    def showReceivedMessages(self, database, user):
+    def showReceivedFiles(self, database, user):
         self.database = database
         self.user = user
         self.refreshTimer()
         self.listWidget.clear()
-        self.Message.clear()
         self.privateKeyLabel.setHidden(True)
         self.decryptButton.setEnabled(False)
         self.validateButton.setEnabled(False)
@@ -129,8 +119,7 @@ class Ui_MessageBoard(object):
             self.listWidget.addItem(title)
             startNum += 1
     
-    def showSelectedMessage(self, item):
-        self.Message.clear()
+    def showSelectedFile(self, item):
         self.validationLabel.setText("")
         self.privateKeyPath.setDisabled(True)
         messageList = (item.text()).split(' ')
@@ -165,10 +154,6 @@ class Ui_MessageBoard(object):
             self.validateButton.setEnabled(True)
             self.privateKeyPath.setDisabled(True)
             self.showPlainMessage(selectedMessage[4])
-
-    def showPlainMessage(self, message):
-        self.Message.clear()
-        self.Message.insertPlainText(message)
     
     def uploadPrivateKey(self, database):
         # file_name = QFileDialog.getOpenFileName()
@@ -192,7 +177,8 @@ class Ui_MessageBoard(object):
 
         decryptMessage = ''
         decryptMessage = decrypt_message(path, selectedMessage[5])
-        self.showPlainMessage(decryptMessage)
+        # let user download decrypted file
+        # self.showPlainMessage(decryptMessage)
     
     def getSignedMessage(self):
         messageList = (self.listWidget.currentItem().text()).split(' ')
@@ -235,7 +221,7 @@ class Ui_MessageBoard(object):
     def updateMessages(self):
         messages = self.database.getReceivedMessages(self.user.getStudentName())
         if len(messages) != len(self.receivedMessages):
-            self.showReceivedMessages(self.database, self.user)
+            self.showReceivedFiles(self.database, self.user)
 
     def privateKeyPathclear(self):
         self.privateKeyPath.clear()

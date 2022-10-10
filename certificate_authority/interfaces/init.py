@@ -8,6 +8,7 @@ from interfaces.MessageBoard import *
 from interfaces.KeyPairs import *
 from interfaces.user import *
 from interfaces.SendMessage import *
+from interfaces.FileBoard import *
 from scripts.crypto import *
 from scripts.deploy import *
 from db.database import *
@@ -42,6 +43,11 @@ def frontend_UI():
     widget_send_message = QWidget()
     ui_send_message = Ui_Send_Message()
     ui_send_message.setupUi(widget_send_message)
+
+    # File board page widget
+    widget_file = QWidget()
+    ui_file = Ui_FileBoard()
+    ui_file.setupUi(widget_file)
 
     # connect to DB
     # database = Database()
@@ -123,6 +129,13 @@ def frontend_UI():
     ui_message.validateButton.clicked.connect(
         lambda: {
             validateSignedMessage(database, ui_message)
+        }
+    )
+    # File board button event
+    ui_mainPage.CheckFilesButton.clicked.connect(
+        lambda: {
+            ui_file.showReceivedFiles(database, user),
+            widget_file.show()
         }
     )
 
