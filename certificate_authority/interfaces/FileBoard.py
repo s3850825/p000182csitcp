@@ -136,25 +136,25 @@ class Ui_FileBoard(object):
         selectedaFile = None
         for aFile in self.receivedFiles:
             if aFile[2] == date + " " + time:
-                selectedaFile = aFile
+                selectedFile = aFile
                 break
 
-        if selectedaFile[3] == 'ENCRYPTED_AND_SIGNED':
+        if selectedFile[3] == 'ENCRYPTED_AND_SIGNED':
             self.decryptButton.setEnabled(True)
             self.privateKeyLabel.setHidden(False)
             self.validateButton.setEnabled(True)
             self.privateKeyPath.setDisabled(False)
-        elif selectedaFile[3] == 'ENCRYPTED':
+        elif selectedFile[3] == 'ENCRYPTED':
             self.privateKeyLabel.setHidden(False)
             self.decryptButton.setEnabled(True)
             self.validateButton.setEnabled(False)
             self.privateKeyPath.setDisabled(False)
-        elif selectedaFile[3] == 'SIGNED':
+        elif selectedFile[3] == 'SIGNED':
             self.privateKeyLabel.setHidden(True)
             self.decryptButton.setEnabled(False)
             self.validateButton.setEnabled(True)
             self.privateKeyPath.setDisabled(True)
-            self.showPlainMessage(selectedMessage[4])
+            self.downloadOriginalFile(selectedFile[4], selectedFile[8])
     
     def uploadPrivateKey(self, database):
         path = self.privateKeyPath.toPlainText()
@@ -177,7 +177,7 @@ class Ui_FileBoard(object):
                 
         decrypt_file(path, selectedFile[5], selectedFile[8])
     
-    def getSignedMessage(self):
+    def getSignedFile(self):
         fileList = (self.listWidget.currentItem().text()).split(' ')
 
         date = ''
@@ -212,13 +212,19 @@ class Ui_FileBoard(object):
         # Repeating timer, calls random_pick over and over.
         self.picktimer = QTimer()
         self.picktimer.setInterval(500)
-        self.picktimer.timeout.connect(self.updateMessages)
+        self.picktimer.timeout.connect(self.updateFiles)
         self.picktimer.start()
 
-    def updateMessages(self):
+    def updateFiles(self):
         files = self.database.getReceivedFiles(self.user.getStudentName())
         if len(files) != len(self.receivedFiles):
             self.showReceivedFiles(self.database, self.user)
 
     def privateKeyPathclear(self):
         self.privateKeyPath.clear()
+
+    def downloadOriginalFile(self, originalBinary, filename):
+        filepath = os.getcwd() + "\\" + filename
+
+        with open(filepath, 'wb') as file:
+            file.write(originalBinary)

@@ -150,16 +150,28 @@ def frontend_UI():
             sendFile(database, user, ui_send_file, widget_send_file)
         }
     )
-    # Encrypt file button event
+    # Encrypt a file button event
     ui_send_file.EncryptButton.clicked.connect(
         lambda: {
             checkEncryptFile(database, ui_send_file, widget_send_file)
         }
     )
-    # Decrypt file button event
+    # Decrypt a file button event
     ui_file.decryptButton.clicked.connect(
         lambda: {
             ui_file.uploadPrivateKey(database)
+        }
+    )
+    # Sign a file button event
+    ui_send_file.SignatureButton.clicked.connect(
+        lambda: {
+            checkSignFile(database, ui_send_file, widget_send_file)
+        }
+    )
+    # verify a signed file button event
+    ui_file.validateButton.clicked.connect(
+        lambda: {
+            verifySignedFile(database, ui_file, widget_file)
         }
     )
 
@@ -227,11 +239,9 @@ def checkEncryptAndSignMessage(database, ui_send_message, widget_send_message):
             # sign message
             signedEncryptedMessage = sign_encrypted_message(database, privKey, encryptedMessage)
             # signedMessage = sign_message(database, privKey, encryptedMessage)
-
-            # check current time
-            x = datetime.datetime.now()
-            time = str(x.year)+"-"+str(x.month).rjust(2, '0')+"-"+str(x.day).rjust(2, '0')+" "+ str(x.hour).rjust(2, '0')+":"+str(x.minute).rjust(2, '0')+":"+str(x.second).rjust(2, '0')
             
+            time = currentTime()
+
             # save the message into DB as plain text
             database.insertMessage(sender, receiver, time, "ENCRYPTED_AND_SIGNED", None, encryptedMessage, None, signedEncryptedMessage)
             widget_send_message.close()
@@ -247,10 +257,8 @@ def checkEncryptMessage(database, ui_send_message, widget_send_message):
         # encrypt message
         encryptedMessage = encrypt_message(database, receiver, message)
 
-        # check current time
-        x = datetime.datetime.now()
-        time = str(x.year)+"-"+str(x.month).rjust(2, '0')+"-"+str(x.day).rjust(2, '0')+" "+ str(x.hour).rjust(2, '0')+":"+str(x.minute).rjust(2, '0')+":"+str(x.second).rjust(2, '0')
-        
+        time = currentTime()
+
         # save the message into DB as encrypted text
         database.insertMessage(sender, receiver, time, "ENCRYPTED", None, encryptedMessage, None, None)
         widget_send_message.close()
@@ -268,10 +276,8 @@ def getSenderPrivateKey(database, ui_send_message, widget_send_message):
         # sign message
         signedMessage = sign_message(database, privKey, message)
         
-        # check current time
-        x = datetime.datetime.now()
-        time = str(x.year)+"-"+str(x.month).rjust(2, '0')+"-"+str(x.day).rjust(2, '0')+" "+ str(x.hour).rjust(2, '0')+":"+str(x.minute).rjust(2, '0')+":"+str(x.second).rjust(2, '0')
-        
+        time = currentTime()  
+
         # save the message into DB as signed text
         database.insertMessage(sender, receiver, time, "SIGNED", message, None, signedMessage, None)
         widget_send_message.close()
@@ -304,11 +310,45 @@ def checkEncryptFile(database, ui_send_file, widget_send_file):
     # encrypt file
     encryptedFile = encrypt_file(database, receiver, filepath)
 
-    # check current time
-    x = datetime.datetime.now()
-    time = str(x.year)+"-"+str(x.month).rjust(2, '0')+"-"+str(x.day).rjust(2, '0')+" "+ str(x.hour).rjust(2, '0')+":"+str(x.minute).rjust(2, '0')+":"+str(x.second).rjust(2, '0')
+    time = currentTime()
     
     # save the file into DB as encrypted file
     database.insertFile(sender, receiver, time, "ENCRYPTED", None, encryptedFile, None, None, filename)
     widget_send_file.close()
     ui_send_file.clear()
+
+def checkSignFile(database, ui_send_file, widget_send_file):
+    # take what student has typed
+    sender, receiver, filepath = ui_send_file.getUserInputForPlainText()
+    filepathArray = filepath.split("/")
+    filename = filepathArray[-1]
+
+    privKey = ui_send_file.getSenderPrivateKey()
+
+    # original file
+    originalFile = open_original_file(filepath)
+
+    # sign file
+    signedFile = sign_file(privKey, filepath)
+
+    time = currentTime()
+    
+    # save the file into DB as signed file
+    database.insertFile(sender, receiver, time, "SIGNED", originalFile, None, signedFile, None, filename)
+    widget_send_file.close()
+    ui_send_file.clear()
+
+def verifySignedFile(database, ui_file, widget_file):
+    # get all the information
+    sender, fileType, ogFile, encryptedFile, signedFile, signedEncryptedFile = ui_file.getSignedFile()
+
+    verification = verify_file(database, sender, ogFile, signedFile)
+
+    # show the result
+    ui_file.showVerificationResult(verification)
+
+def currentTime():
+    # check current time
+    x = datetime.datetime.now()
+    time = str(x.year)+"-"+str(x.month).rjust(2, '0')+"-"+str(x.day).rjust(2, '0')+" "+ str(x.hour).rjust(2, '0')+":"+str(x.minute).rjust(2, '0')+":"+str(x.second).rjust(2, '0')
+    return time

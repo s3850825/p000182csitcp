@@ -117,11 +117,11 @@ class Ui_Send_File(object):
     def getUserInputForPlainText(self):
         return self.SenderName.text(), self.comboBoxReceiver.currentText(), self.filePathLabel.text()
 
-    def getSenderPrivateKeyAndMessage(self):
+    def getSenderPrivateKey(self):
         path = self.privateKeyPath.toPlainText()
         privKey = load_priv_key(path)
 
-        return privKey, self.textMessage.toPlainText()
+        return privKey
 
     def privKeyChanged(self):
         if self.privateKeyPath.toPlainText():

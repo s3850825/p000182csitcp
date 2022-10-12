@@ -283,20 +283,23 @@ def decrypt_file(filepath, encrypted_file, filename):
         print("[ Invalid private key ]")
         return ""
     
-def sign_file(privKey_path, filepath):
-    with open(privKey_path, 'rb') as file1:
-        privKey = file1.read()
-
-    with open(filepath, 'rb') as file2:
-        original = file2.read()
+def sign_file(privKey, filepath):
+    with open(filepath, 'rb') as file:
+        original = file.read()
 
     return sign_blob(original, privKey)
 
-def verify_file(database, sender, ):
+def verify_file(database, sender, original, signed_blob):
     walletPassword = database.getStudentWalletPassword(sender)
     print("[ Retrieve", sender, "'s public key from Blockchain ]")
 
     # get receiver's public key from Blockchain
     pubKey = get_public_key(walletPassword, database)
-    
+
     return verify_blob(signed_blob, original, pubKey)
+
+def open_original_file(filepath):
+    with open(filepath, 'rb') as file:
+        original = file.read()
+
+    return original
