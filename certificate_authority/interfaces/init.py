@@ -174,8 +174,22 @@ def frontend_UI():
             verifySignedFile(database, ui_file, widget_file)
         }
     )
+    # Encrypt and sign a file button event
+    ui_send_file.EncryptAndSignButton.clicked.connect(
+        lambda: {
+            checkEncryptAndSignFile(database, ui_send_file, widget_send_file)
+        }
+    )
+    # Verify the encrypted file button event
 
     sys.exit(app.exec_())
+
+
+def currentTime():
+    # check current time
+    x = datetime.datetime.now()
+    time = str(x.year)+"-"+str(x.month).rjust(2, '0')+"-"+str(x.day).rjust(2, '0')+" "+ str(x.hour).rjust(2, '0')+":"+str(x.minute).rjust(2, '0')+":"+str(x.second).rjust(2, '0')
+    return time
 
 def checkStudentInfo(database, studentInfo, ui_sign, widget_sign):
     studentName, studentPassword, studentPassword2, studentWalletPassword = studentInfo
@@ -303,7 +317,7 @@ def sendFile(database, user, ui_send_file, widget_send_file):
 
 def checkEncryptFile(database, ui_send_file, widget_send_file):
     # take what student has typed
-    sender, receiver, filepath = ui_send_file.getUserInputForPlainText()
+    sender, receiver, filepath = ui_send_file.getUserInput()
     filepathArray = filepath.split("/")
     filename = filepathArray[-1]
 
@@ -319,7 +333,7 @@ def checkEncryptFile(database, ui_send_file, widget_send_file):
 
 def checkSignFile(database, ui_send_file, widget_send_file):
     # take what student has typed
-    sender, receiver, filepath = ui_send_file.getUserInputForPlainText()
+    sender, receiver, filepath = ui_send_file.getUserInput()
     filepathArray = filepath.split("/")
     filename = filepathArray[-1]
 
@@ -341,14 +355,31 @@ def checkSignFile(database, ui_send_file, widget_send_file):
 def verifySignedFile(database, ui_file, widget_file):
     # get all the information
     sender, fileType, ogFile, encryptedFile, signedFile, signedEncryptedFile = ui_file.getSignedFile()
-
-    verification = verify_file(database, sender, ogFile, signedFile)
+    if fileType == "ENCRYPTED_AND_SIGNED":
+        result = verify_encryptedFile(database, sender, encryptedFile, signedEncryptedFile)
+    else:
+        result = verify_file(database, sender, ogFile, signedFile)
 
     # show the result
-    ui_file.showVerificationResult(verification)
+    ui_file.showVerificationResult(result)
 
-def currentTime():
-    # check current time
-    x = datetime.datetime.now()
-    time = str(x.year)+"-"+str(x.month).rjust(2, '0')+"-"+str(x.day).rjust(2, '0')+" "+ str(x.hour).rjust(2, '0')+":"+str(x.minute).rjust(2, '0')+":"+str(x.second).rjust(2, '0')
-    return time
+def checkEncryptAndSignFile(database, ui_send_file, widget_send_file):
+    # take what student has typed
+    sender, receiver, filepath = ui_send_file.getUserInput()
+    filepathArray = filepath.split("/")
+    filename = filepathArray[-1]
+
+    # encrypt file
+    encryptedFile = encrypt_file(database, receiver, filepath)
+
+    time = currentTime()
+
+    privKey = ui_send_file.getSenderPrivateKey()
+
+    # sign encrypted file
+    signedEncryptedFile = sign_encrypted_File(database, privKey, encryptedFile)
+    
+    # save the file into DB as signed file
+    database.insertFile(sender, receiver, time, "ENCRYPTED_AND_SIGNED", None, encryptedFile, None, signedEncryptedFile, filename)
+    widget_send_file.close()
+    ui_send_file.clear()

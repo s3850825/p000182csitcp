@@ -114,7 +114,7 @@ class Ui_Send_File(object):
         self.comboBoxReceiver.clear()
         self.filePathLabel.setText("")
     
-    def getUserInputForPlainText(self):
+    def getUserInput(self):
         return self.SenderName.text(), self.comboBoxReceiver.currentText(), self.filePathLabel.text()
 
     def getSenderPrivateKey(self):

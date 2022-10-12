@@ -303,3 +303,15 @@ def open_original_file(filepath):
         original = file.read()
 
     return original
+
+def sign_encrypted_File(database, privKey, encryptedFile):
+    return sign_blob(encryptedFile, privKey)
+
+def verify_encryptedFile(database, sender, encryptedFile, signedEncryptedFile):
+    walletPassword = database.getStudentWalletPassword(sender)
+    print("[ Retrieve", sender, "'s public key from Blockchain ]")
+
+    # get receiver's public key from Blockchain
+    pubKey = get_public_key(walletPassword, database)
+
+    return verify_blob(signedEncryptedFile, encryptedFile, pubKey)
