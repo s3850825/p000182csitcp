@@ -15,3 +15,9 @@
 
 * Github repository: https://github.com/s3850825/p000182csitcp.git
 * jira Board: https://p000182csitcp.atlassian.net/jira/software/projects/BBCACS/boards/1
+
+## How to run
+
+* run 'git lfs pull'
+* run 'cd certificate_authority'
+* run 'brownie run scripts/test.py --network goerli'
