@@ -78,13 +78,13 @@ class DatabaseOracle():
         self.cursor.execute(query, (sender, receiver, time, fileType, file, encrypted_file, signed_file, signed_encrypted_file, fileName))
 
     def getReceivedMessages(self, username):
-        query = "SELECT * FROM message WHERE receiver=:1"
+        query = "SELECT * FROM message WHERE receiver=:1 ORDER BY time"
         self.cursor.execute(query, (username,))
         allMessages = self.cursor.fetchall()
         return allMessages
 
     def getReceivedFiles(self, username):
-        query = "SELECT * FROM files WHERE receiver=:1"
+        query = "SELECT * FROM files WHERE receiver=:1 ORDER BY time"
         self.cursor.execute(query, (username,))
         allFiles = self.cursor.fetchall()
         return allFiles

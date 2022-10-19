@@ -220,10 +220,11 @@ class Ui_MessageBoard(object):
         return sender, messageType, ogMessage, encryptedMessage, signedMessage, signedEncryptedMessage
 
     def showVerificationResult(self, result):
+        self.Message.clear()
         if result:
-            self.validationLabel.setText("True")
+            self.Message.insertPlainText("True")
         else:
-            self.validationLabel.setText("False")
+            self.Message.insertPlainText("False")
 
     def refreshTimer(self):
         # Repeating timer, calls random_pick over and over.
