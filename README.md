@@ -19,7 +19,7 @@
 ## How to run
 
 * run `git clone https://github.com/s3850825/p000182csitcp.git`
-* runt `git lfs install`
+* run `git lfs install`
 * run `git lfs pull`
 * run `pip install eth-brownie`
 * run `pip install cx_Oracle`
