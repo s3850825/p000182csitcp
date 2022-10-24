@@ -18,7 +18,10 @@
 
 ## How to run
 
-* run 'git clone https://github.com/s3850825/p000182csitcp.git'
-* run 'git lfs pull'
-* run 'cd certificate_authority'
-* run 'brownie run scripts/test.py --network goerli'
+* run `git clone https://github.com/s3850825/p000182csitcp.git`
+* runt `git lfs install`
+* run `git lfs pull`
+* run `pip install eth-brownie`
+* run `pip install cx_Oracle`
+* run `cd certificate_authority`
+* run `brownie run scripts/test.py --network goerli`
