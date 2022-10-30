@@ -130,7 +130,7 @@ def frontend_UI():
     # Signature text button event
     ui_send_message.SignatureButton.clicked.connect(
         lambda: {
-            getSenderPrivateKey(database, ui_send_message, widget_send_message)
+            getSenderPrivateKey(database, ui_send_message, widget_send_message, user)
         }
     )
     # Validate text button event
@@ -179,7 +179,7 @@ def frontend_UI():
     # Encrypt and sign a file button event
     ui_send_file.EncryptAndSignButton.clicked.connect(
         lambda: {
-            checkEncryptAndSignFile(database, ui_send_file, widget_send_file)
+            checkEncryptAndSignFile(database, ui_send_file, widget_send_file, user)
         }
     )
     # Verify the encrypted file button event
@@ -365,7 +365,7 @@ def verifySignedFile(database, ui_file, widget_file):
     # show the result
     ui_file.showVerificationResult(result)
 
-def checkEncryptAndSignFile(database, ui_send_file, widget_send_file):
+def checkEncryptAndSignFile(database, ui_send_file, widget_send_file, user):
     # take what student has typed
     sender, receiver, filepath = ui_send_file.getUserInput()
     filepathArray = filepath.split("/")
