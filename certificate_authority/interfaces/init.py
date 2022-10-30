@@ -74,7 +74,9 @@ def frontend_UI():
         lambda: {
             ui_mainPage.logout(user, widget_MainPage, widget_login),
             ui_send_message.privateKeyPathclear(),
-            ui_message.privateKeyPathclear()
+            ui_message.privateKeyPathclear(),
+            ui_send_file.privateKeyPathclear(),
+            ui_file.privateKeyPathclear()
         }
     )    
     # Download key pairs button event
@@ -110,7 +112,7 @@ def frontend_UI():
     # Encrypt and Sign text button event
     ui_send_message.EncryptAndSignButton.clicked.connect(
         lambda: {
-            checkEncryptAndSignMessage(database, ui_send_message, widget_send_message)
+            checkEncryptAndSignMessage(database, ui_send_message, widget_send_message, user)
         }
     )
     # Encrypt text button event
@@ -122,7 +124,7 @@ def frontend_UI():
     # Decrypt text button event
     ui_message.decryptButton.clicked.connect(
         lambda: {
-            ui_message.uploadPrivateKey(database)
+            ui_message.uploadPrivateKey(database, user)
         }
     )
     # Signature text button event
@@ -159,13 +161,13 @@ def frontend_UI():
     # Decrypt a file button event
     ui_file.decryptButton.clicked.connect(
         lambda: {
-            ui_file.uploadPrivateKey(database)
+            ui_file.uploadPrivateKey(database, user)
         }
     )
     # Sign a file button event
     ui_send_file.SignatureButton.clicked.connect(
         lambda: {
-            checkSignFile(database, ui_send_file, widget_send_file)
+            checkSignFile(database, ui_send_file, widget_send_file, user)
         }
     )
     # verify a signed file button event
@@ -239,7 +241,7 @@ def sendMessage(database, user, ui_send_message, widget_send_message):
     ui_send_message.showReceiverStudents(user, database)
     widget_send_message.show()
 
-def checkEncryptAndSignMessage(database, ui_send_message, widget_send_message):
+def checkEncryptAndSignMessage(database, ui_send_message, widget_send_message, user):
     # take what student has typed
     sender, receiver, og_message = ui_send_message.getUserInputForPlainText()
     # only send a message when the message is not null 
@@ -248,7 +250,7 @@ def checkEncryptAndSignMessage(database, ui_send_message, widget_send_message):
         encryptedMessage = encrypt_message(database, receiver, og_message)
 
         # take student's private key and message
-        privKey, _ = ui_send_message.getSenderPrivateKeyAndMessage()
+        privKey, _ = ui_send_message.getSenderPrivateKeyAndMessage(user)
         if privKey != None:
             # sign message
             signedEncryptedMessage = sign_encrypted_message(database, privKey, encryptedMessage)
@@ -280,11 +282,11 @@ def checkEncryptMessage(database, ui_send_message, widget_send_message):
     else:
         print("[ Message must not be null ]")
 
-def getSenderPrivateKey(database, ui_send_message, widget_send_message):
+def getSenderPrivateKey(database, ui_send_message, widget_send_message, user):
     # take what student has typed
     sender, receiver, message = ui_send_message.getUserInputForPlainText()
     # take student's private key and message
-    privKey, message = ui_send_message.getSenderPrivateKeyAndMessage()
+    privKey, message = ui_send_message.getSenderPrivateKeyAndMessage(user)
     # only sign the message when student chooses valid private key
     if privKey != None:
         # sign message
@@ -331,13 +333,13 @@ def checkEncryptFile(database, ui_send_file, widget_send_file):
     widget_send_file.close()
     ui_send_file.clear()
 
-def checkSignFile(database, ui_send_file, widget_send_file):
+def checkSignFile(database, ui_send_file, widget_send_file, user):
     # take what student has typed
     sender, receiver, filepath = ui_send_file.getUserInput()
     filepathArray = filepath.split("/")
     filename = filepathArray[-1]
 
-    privKey = ui_send_file.getSenderPrivateKey()
+    privKey = ui_send_file.getSenderPrivateKey(user)
 
     # original file
     originalFile = open_original_file(filepath)
@@ -374,7 +376,7 @@ def checkEncryptAndSignFile(database, ui_send_file, widget_send_file):
 
     time = currentTime()
 
-    privKey = ui_send_file.getSenderPrivateKey()
+    privKey = ui_send_file.getSenderPrivateKey(user)
 
     # sign encrypted file
     signedEncryptedFile = sign_encrypted_File(database, privKey, encryptedFile)

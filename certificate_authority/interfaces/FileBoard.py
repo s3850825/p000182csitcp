@@ -105,6 +105,10 @@ class Ui_FileBoard(object):
         self.user = user
         self.refreshTimer()
         self.listWidget.clear()
+        self.privateKeyPath.clear()
+        if user.getPrivateKeyPath() != '':
+            self.privateKeyPath.clear()
+            self.privateKeyPath.insertPlainText(user.getPrivateKeyPath())
         self.privateKeyLabel.setHidden(True)
         self.decryptButton.setEnabled(False)
         self.validateButton.setEnabled(False)
@@ -156,8 +160,11 @@ class Ui_FileBoard(object):
             self.privateKeyPath.setDisabled(True)
             self.downloadOriginalFile(selectedFile[4], selectedFile[8])
     
-    def uploadPrivateKey(self, database):
+    def uploadPrivateKey(self, database, user):
         path = self.privateKeyPath.toPlainText()
+
+        if user.getPrivateKeyPath() == '':
+            user.privateKeyPath = path
 
         fileList = (self.listWidget.currentItem().text()).split(' ')
 

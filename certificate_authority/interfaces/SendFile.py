@@ -104,6 +104,10 @@ class Ui_Send_File(object):
     def showStudentName(self, user):
         self.SenderName.setText(user.getStudentName())
 
+        if user.getPrivateKeyPath() != '':
+            self.privateKeyPath.clear()
+            self.privateKeyPath.insertPlainText(user.getPrivateKeyPath())
+
     def showReceiverStudents(self, user, database):
         studentList = database.getAllStudents() 
         studentList.remove(user.getStudentName())
@@ -117,8 +121,12 @@ class Ui_Send_File(object):
     def getUserInput(self):
         return self.SenderName.text(), self.comboBoxReceiver.currentText(), self.filePathLabel.text()
 
-    def getSenderPrivateKey(self):
+    def getSenderPrivateKey(self, user):
         path = self.privateKeyPath.toPlainText()
+        
+        if user.getPrivateKeyPath() == '':
+            user.privateKeyPath = path
+
         privKey = load_priv_key(path)
 
         return privKey

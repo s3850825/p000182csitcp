@@ -114,6 +114,10 @@ class Ui_MessageBoard(object):
         self.refreshTimer()
         self.listWidget.clear()
         self.Message.clear()
+        self.privateKeyPath.clear()
+        if user.getPrivateKeyPath() != '':
+            self.privateKeyPath.clear()
+            self.privateKeyPath.insertPlainText(user.getPrivateKeyPath())
         self.privateKeyLabel.setHidden(True)
         self.decryptButton.setEnabled(False)
         self.validateButton.setEnabled(False)
@@ -170,10 +174,13 @@ class Ui_MessageBoard(object):
         self.Message.clear()
         self.Message.insertPlainText(message)
     
-    def uploadPrivateKey(self, database):
+    def uploadPrivateKey(self, database, user):
         # file_name = QFileDialog.getOpenFileName()
         path = self.privateKeyPath.toPlainText()
-        print(path)
+        
+        if user.getPrivateKeyPath() == '':
+            user.privateKeyPath = path
+
         messageList = (self.listWidget.currentItem().text()).split(' ')
 
         date = ''
@@ -190,7 +197,6 @@ class Ui_MessageBoard(object):
                 selectedMessage = message
                 break
 
-        decryptMessage = ''
         decryptMessage = decrypt_message(path, selectedMessage[5])
         self.showPlainMessage(decryptMessage)
     
