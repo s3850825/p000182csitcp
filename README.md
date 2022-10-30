@@ -5,11 +5,11 @@
 # IK-182-Blockchain-1
 
 ## Members
+* You chan Lee (s3850825)
 * Jingxuan Long (s3860956) 
 * Yang Feng (s3860864)
 * Yingying Guo (s3860867)
 * Shaohui Wang (s3860973)
-* You chan Lee (s3850825)
 
 ## Records
 
@@ -18,6 +18,10 @@
 
 ## How to run
 
-* run 'git lfs pull'
-* run 'cd certificate_authority'
-* run 'brownie run scripts/test.py --network goerli'
+* run `git clone https://github.com/s3850825/p000182csitcp.git`
+* run `git lfs install`
+* run `git lfs pull`
+* run `pip install eth-brownie`
+* run `pip install cx_Oracle`
+* run `cd certificate_authority`
+* run `brownie run scripts/test.py --network goerli`
