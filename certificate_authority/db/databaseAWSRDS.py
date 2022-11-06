@@ -1,33 +1,44 @@
-import cx_Oracle
+import mysql.connector
+import sys
+import boto3
 import os
 
-class DatabaseOracle():
+class DatabaseAWSRDS():
     def __init__(self):
-        path = os.getcwd() + "\db\instantclient-basic-windows.x64-21.6.0.0.0dbru\instantclient_21_6"
-        cx_Oracle.init_oracle_client(lib_dir=path) 
-        self.connection = cx_Oracle.connect(user='admin', password='P000182csitcp!', dsn='p000182csitcp_high')
-        self.connection.autocommit = True
+        ENDPOINT="s3766194-s21.cvtg0e3lvahj.ap-southeast-2.rds.amazonaws.com"
+        PORT="3306"
+        USER="admin"
+        PASSWD="adminadmin"
+        REGION="ap-southeast-2b"
+        DBNAME="p000182csitcp"
+        os.environ['LIBMYSQL_ENABLE_CLEARTEXT_PLUGIN'] = '1'
+
+        #gets the credentials from .aws/credentials
+        session = boto3.Session(profile_name='default')
+        client = session.client('rds')
+
+        # token = client.generate_db_auth_token(DBHostname=ENDPOINT, Port=PORT, DBUsername=USER, Region=REGION)
+        self.connection = mysql.connector.connect(host=ENDPOINT, user=USER, passwd=PASSWD, port=PORT, database=DBNAME, ssl_ca='SSLCERTIFICATE', autocommit=True)
         self.cursor = self.connection.cursor()
-        self.connection.outputtypehandler = output_type_handler
 
     def insertNewStudent(self, username, password, walletPassword):
         query1 = "SELECT count(*) FROM student"
         self.cursor.execute(query1)
         studentId = self.cursor.fetchone()[0] + 1
 
-        query2 = "INSERT INTO student (id, username, password, walletPassword, publicKey, privateKey) VALUES (:1, :2, :3, :4, :5, :6)"
+        query2 = "INSERT INTO student (id, username, password, walletPassword, publicKey, privateKey) VALUES (%s, %s, %s, %s, %s, %s)"
         self.cursor.execute(query2, (studentId, username, password, walletPassword, None, None,))
 
     def updateNewStudentKeyPairs(self, privKey, pubKey, username):
-        query = "UPDATE student set privateKey = :1, publicKey = :2 WHERE username = :3"
+        query = "UPDATE student set privateKey = %s, publicKey = %s WHERE username = %s"
         self.cursor.execute(query, (privKey, pubKey, username))
 
     def deleteExistentStudent(self, username):
-        query = "DELETE FROM student WHERE username=:1" 
+        query = "DELETE FROM student WHERE username=%s" 
         self.cursor.execute(query, (username,))
 
     def checkUniqueStudentName(self, username):
-        query = "SELECT count(*) FROM student WHERE username=:1"
+        query = "SELECT count(*) FROM student WHERE username=%s"
         self.cursor.execute(query, (username,))
         result = self.cursor.fetchall()
         if result[0][0] == 0:
@@ -35,7 +46,7 @@ class DatabaseOracle():
         return False
 
     def checkStudentInfo(self, username, password):
-        query = "SELECT * FROM student WHERE username=:1 AND password=:2"
+        query = "SELECT * FROM student WHERE username=%s AND password=%s"
         self.cursor.execute(query, (username, password))
         result = self.cursor.fetchall()
         if (result != []):
@@ -43,19 +54,19 @@ class DatabaseOracle():
         return False
     
     def getStudentWalletPassword(self, username):
-        query = "SELECT walletPassword FROM student WHERE username=:1"
+        query = "SELECT walletPassword FROM student WHERE username=%s"
         self.cursor.execute(query, (username,))
         walletPW = self.cursor.fetchall()
         return walletPW[0][0]
     
     def getStudentPrivateKey(self, username):
-        query = "SELECT privateKey FROM student WHERE username=:1"
+        query = "SELECT privateKey FROM student WHERE username=%s"
         self.cursor.execute(query, (username,))
         privKey = self.cursor.fetchall()
         return privKey[0][0]
 
     def getStudentPublicKey(self, username):
-        query = "SELECT publicKey FROM student WHERE username=:1"
+        query = "SELECT publicKey FROM student WHERE username=%s"
         self.cursor.execute(query, (username,))
         pubKey = self.cursor.fetchall()
         return pubKey[0][0]
@@ -70,27 +81,27 @@ class DatabaseOracle():
         return studentList
 
     def insertMessage(self, sender, receiver, time, messageType, message, encrypted_message, signed_message, signed_encrypted_message):
-        query = "INSERT INTO message (sender, receiver, time, messagetype, message, encrypted_message, signed_message, signed_encrypted_message) VALUES (:1, :2, :3, :4, :5, :6, :7, :8)"
+        query = "INSERT INTO message (sender, receiver, time, messagetype, message, encrypted_message, signed_message, signed_encrypted_message) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
         self.cursor.execute(query, (sender, receiver, time, messageType, message, encrypted_message, signed_message, signed_encrypted_message))
 
     def insertFile(self, sender, receiver, time, fileType, file, encrypted_file, signed_file, signed_encrypted_file, fileName):
-        query = "INSERT INTO files (sender, receiver, time, fileType, files, encrypted_file, signed_file, signed_encrypted_file, fileName) VALUES (:1, :2, :3, :4, :5, :6, :7, :8, :9)"
+        query = "INSERT INTO files (sender, receiver, time, fileType, files, encrypted_file, signed_file, signed_encrypted_file, fileName) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
         self.cursor.execute(query, (sender, receiver, time, fileType, file, encrypted_file, signed_file, signed_encrypted_file, fileName))
 
     def getReceivedMessages(self, username):
-        query = "SELECT * FROM message WHERE receiver=:1 ORDER BY time"
+        query = "SELECT * FROM message WHERE receiver=%s ORDER BY time"
         self.cursor.execute(query, (username,))
         allMessages = self.cursor.fetchall()
         return allMessages
 
     def getReceivedFiles(self, username):
-        query = "SELECT * FROM files WHERE receiver=:1 ORDER BY time"
+        query = "SELECT * FROM files WHERE receiver=%s ORDER BY time"
         self.cursor.execute(query, (username,))
         allFiles = self.cursor.fetchall()
         return allFiles
     
     def getUserIndexUsingWalletPassword(self, walletPassword):
-        query = "SELECT id FROM student WHERE walletPassword=:1"
+        query = "SELECT id FROM student WHERE walletPassword=%s"
         self.cursor.execute(query, (walletPassword,))
         userIndex = self.cursor.fetchall()
 

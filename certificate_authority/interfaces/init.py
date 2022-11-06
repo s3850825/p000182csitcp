@@ -13,7 +13,7 @@ from interfaces.SendFile import *
 from scripts.crypto import *
 from scripts.deploy import *
 from db.database import *
-from db.databaseOracle import *
+from db.databaseAWSRDS import *
 from scripts.keyGeneration import *
 import datetime
 
@@ -55,9 +55,9 @@ def frontend_UI():
     ui_send_file = Ui_Send_File()
     ui_send_file.setupUi(widget_send_file)
 
-    # connect to DB
-    # database = Database()
-    database = DatabaseOracle()
+    # connect to AWS RDS DB
+    database = DatabaseAWSRDS()
+    # database = DatabaseOracle()
 
     # Logged in user
     user = User()
